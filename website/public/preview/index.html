@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>mygo-kit gallery</title>
+    <style>
+      html, body { margin: 0; height: 100%; background: transparent; }
+      body { display: flex; align-items: center; justify-content: center; font: 13px system-ui, sans-serif; color: #8e8e93; }
+      .error { max-width: 80%; text-align: center; }
+    </style>
+  </head>
+  <body>
+    <p class="loading">正在加载预览…</p>
+    <!--
+      ?page=Button        文档页里的单页预览，只画这一页
+      ?page=Button&full   完整画廊，从这一页开始
+      ?theme=dark|light   单独打开时指定配色；在文档页的 iframe 里跟随文档站的暗色开关
+    -->
+    <script>
+      const params = new URLSearchParams(location.search)
+      const root = document.documentElement
+      if (params.get("theme")) root.dataset.mygoTheme = params.get("theme")
+      try {
+        const docs = parent !== window && parent.document.documentElement
+        if (docs) {
+          const sync = () => (root.dataset.mygoTheme = docs.classList.contains("dark") ? "dark" : "light")
+          sync()
+          new MutationObserver(sync).observe(docs, { attributes: true, attributeFilter: ["class"] })
+        }
+      } catch {}
+    </script>
+    <script src="wasm_exec.js"></script>
+    <script>
+      const go = new Go()
+      go.argv = ["gallery", "-page", params.get("page") || "Overview"]
+      if (!params.has("full")) go.argv.push("-embed")
+      WebAssembly.instantiateStreaming(fetch("gallery.wasm"), go.importObject)
+        .then((r) => {
+          document.querySelector(".loading").remove()
+          go.run(r.instance)
+        })
+        .catch((e) => {
+          const p = document.createElement("p")
+          p.className = "error"
+          p.textContent = "预览加载失败：" + e
+          document.body.replaceChildren(p)
+        })
+    </script>
+  </body>
+</html>

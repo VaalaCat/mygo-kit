@@ -1,0 +1,5 @@
+node_modules/
+.vitepress/cache/
+.vitepress/dist/
+public/preview/gallery.wasm
+public/preview/wasm_exec.js
