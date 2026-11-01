@@ -1,11 +1,11 @@
 ---
 title: Dialog
-description: 模态对话框：普通的标题加正文，以及带取消和确认按钮的 DialogWith。
+description: Modal dialogs with a title and body, plus DialogWith for cancel and confirm buttons.
 ---
 
 # Dialog
 
-模态对话框。焦点陷阱、Esc 关闭由 MyGo 处理。`Dialog` 只有标题栏和正文，需要取消和确认按钮时用 `DialogWith`。
+Modal dialogs. MyGo handles the focus trap and closing with Esc. `Dialog` has only a title bar and body; use `DialogWith` when you need cancel and confirm buttons.
 
 <Preview page="Dialog" :height="460">
 
@@ -13,73 +13,73 @@ description: 模态对话框：普通的标题加正文，以及带取消和确�
 
 </Preview>
 
-## 用法
+## Usage
 
 ```go
 import kit "github.com/VaalaCat/mygo-kit"
 ```
 
 ```go
-var open bool // 由应用持有，置 true 就打开
+var open bool // Owned by the application; set to true to open
 
-if kit.Button(c, "重命名").Clicked() {
+if kit.Button(c, "Rename").Clicked() {
 	open = true
 }
-if kit.DialogWith(c.Key("rename"), &open, kit.DialogOpt{Title: "重命名", ConfirmLabel: "保存"}, func() {
-	kit.Field(c, kit.FieldOpt{Label: "标题"}, func() ui.Element {
+if kit.DialogWith(c.Key("rename"), &open, kit.DialogOpt{Title: "Rename", ConfirmLabel: "Save"}, func() {
+	kit.Field(c, kit.FieldOpt{Label: "Title"}, func() ui.Element {
 		return kit.TextInput(c.Key("title"), &title)
 	})
 }) {
-	// 用户点了确认或按了 Enter：保存 title
+	// The user clicked confirm or pressed Enter: save title
 }
 ```
 
-对话框每帧都要调用。`open` 为 false 时它什么也不画。`DialogWith` 返回 true 的那一帧，`*open` 已经被置回 false。
+Call the dialog every frame. It draws nothing when `open` is false. In the frame when `DialogWith` returns true, `*open` has already been reset to false.
 
-## 示例
+## Examples
 
-### 普通对话框
+### Basic dialog
 
-`Dialog` 的正文完全由你画，包括关闭按钮。
+You draw the entire body of `Dialog`, including its close button.
 
 ```go
-kit.Dialog(c, &open, "原生对话框", func() {
-	ui.Text(c, "焦点留在对话框里，Esc 关闭。")
-	if kit.PrimaryButton(c, "完成").Clicked() {
+kit.Dialog(c, &open, "Native dialog", func() {
+	ui.Text(c, "Focus stays inside the dialog. Esc closes it.")
+	if kit.PrimaryButton(c, "Done").Clicked() {
 		open = false
 	}
 })
 ```
 
-### 确认和危险操作
+### Confirmation and dangerous actions
 
-没有正文时，`body` 传一个空函数。`Danger` 让确认按钮变成危险色。
+Pass an empty function for `body` when there is no body content. `Danger` gives the confirm button the danger color.
 
 ```go
 if kit.DialogWith(c.Key("delete"), &open, kit.DialogOpt{
-	Title:        "删除会话",
-	Description:  "删除后无法恢复。",
-	ConfirmLabel: "删除",
+	Title:        "Delete conversation",
+	Description:  "This cannot be undone.",
+	ConfirmLabel: "Delete",
 	Danger:       true,
 }, func() {}) {
-	// 删除
+	// Delete
 }
 ```
 
-### 带输入的对话框
+### Dialog with input
 
-确认条件不满足时，用 `ConfirmDisabled` 禁用确认按钮，Enter 也不会确认。
+Use `ConfirmDisabled` to disable the confirm button when the confirmation requirements are not met. Enter will not confirm either.
 
 ```go
-kit.DialogWith(c.Key("rename"), &open, kit.DialogOpt{Title: "重命名", ConfirmDisabled: title == ""}, func() { /* 输入框 */ })
+kit.DialogWith(c.Key("rename"), &open, kit.DialogOpt{Title: "Rename", ConfirmDisabled: title == ""}, func() { /* Input */ })
 ```
 
-初始焦点和 Enter 的规则：
+Initial focus and Enter behavior:
 
-- 打开时焦点落在正文里第一个可编辑的输入，只读输入除外。页签、按钮不会拿到初始焦点。
-- 正文里没有可编辑输入时，焦点落在确认按钮上，并且不画焦点环；Enter 仍然确认。
-- 焦点在单行输入里按 Enter 就是确认；在多行输入里是换行；在按钮上是按下这个按钮。单行输入必须用本库的 `TextInput` 或 `TextInputWith` 才会把 Enter 交给对话框。
-- 取消按钮和 Esc 只关闭，返回 false。
+- On opening, focus moves to the first editable input in the body, excluding read-only inputs. Tabs and buttons do not receive initial focus.
+- When the body has no editable input, focus moves to the confirm button without drawing a focus ring. Enter still confirms.
+- Enter confirms in a single-line input, inserts a newline in a multiline input, and presses a focused button. Single-line inputs must use this library's `TextInput` or `TextInputWith` to pass Enter to the dialog.
+- The cancel button and Esc only close the dialog and return false.
 
 ## API
 
@@ -87,24 +87,24 @@ kit.DialogWith(c.Key("rename"), &open, kit.DialogOpt{Title: "重命名", Confirm
 
 `func Dialog(c *ui.Context, open *bool, title string, content func()) ui.Element`
 
-宽 480（最多占窗口 90%）的模态对话框，标题栏加正文。
+A modal dialog with a title bar and body, 480 wide (at most 90% of the window).
 
-- **open** `*bool`：是否打开，由调用方持有。
-- **title** `string`：标题，同时是可访问名称。
-- **content** `func()`：绘制正文的函数。
+- **open** `*bool`: Whether the dialog is open, owned by the caller.
+- **title** `string`: Title, also used as the accessible name.
+- **content** `func()`: Function that draws the body.
 
 ### DialogWith
 
 `func DialogWith(c *ui.Context, open *bool, opt DialogOpt, body func()) (confirmed bool)`
 
-标题栏、说明、正文，加右对齐的“取消”和确认按钮。点击确认或按 Enter 时关闭并返回 true。
+A title bar, description, and body, with right-aligned “Cancel” and confirm buttons. Clicking confirm or pressing Enter closes the dialog and returns true.
 
-- **body** `func()`：绘制正文的函数。
+- **body** `func()`: Function that draws the body.
 
 ### DialogOpt
 
-- **Title** `string`：标题。
-- **Description** `string`：标题栏下方、正文之前的次要色说明。为空不显示。
-- **ConfirmLabel** `string`：确认按钮文字。为空用内置的“确定”（英文 Confirm）。
-- **Danger** `bool`：确认按钮用 `DangerButton`，否则用 `PrimaryButton`。
-- **ConfirmDisabled** `bool`：禁用确认按钮，Enter 也不会确认。
+- **Title** `string`: Title.
+- **Description** `string`: Description in the secondary color, below the title bar and before the body. Hidden when empty.
+- **ConfirmLabel** `string`: Confirm button text. Defaults to the built-in localized “Confirm” label when empty.
+- **Danger** `bool`: Uses `DangerButton` for confirmation; otherwise uses `PrimaryButton`.
+- **ConfirmDisabled** `bool`: Disables the confirm button and prevents Enter from confirming.

@@ -1,11 +1,11 @@
 ---
-title: 暗色模式
-description: 用 OneDark 做暗色，由应用自己切换，或跟随系统。
+title: Dark Mode
+description: Use OneDark for dark mode, switch it in your application, or follow the system appearance.
 ---
 
-# 暗色模式
+# Dark Mode
 
-本库内置两份主题：`kit.OneLight()` 和 `kit.OneDark()`。明暗由应用决定，把哪一份交给 `ApplyTheme` 就是哪一份。
+The library includes two themes: `kit.OneLight()` and `kit.OneDark()`. Your application chooses the appearance by passing a theme to `ApplyTheme`.
 
 <Preview page="Overview" :height="360">
 
@@ -13,14 +13,14 @@ description: 用 OneDark 做暗色，由应用自己切换，或跟随系统。
 
 </Preview>
 
-文档站的明暗开关和上面的预览是联动的，切换右上角的外观试试。
+The docs site’s appearance switch also controls the preview above. Try changing the appearance in the top right.
 
-## 应用自己切换
+## Switch in your application
 
-应用持有一个 `dark` 状态，每帧选主题：
+Keep a `dark` state in your application and choose the theme each frame:
 
 ```go
-var dark bool // 由应用持有，可以存进配置
+var dark bool // Owned by the application; can be saved in configuration
 
 func view(c *ui.Context) {
 	theme := kit.OneLight()
@@ -29,38 +29,38 @@ func view(c *ui.Context) {
 	}
 	kit.ApplyTheme(c, theme)
 
-	if kit.Button(c, "切换明暗").Clicked() {
+	if kit.Button(c, "Toggle appearance").Clicked() {
 		dark = !dark
 	}
 }
 ```
 
-## 跟随系统
+## Follow the system
 
-MyGo 会把系统的明暗报告给每一帧。要跟随它，在 `ApplyTheme` 之前读 `c.Theme().Dark`：
+MyGo reports the system appearance each frame. To follow it, before calling `ApplyTheme`, read `c.Theme().Dark`:
 
 ```go
 func view(c *ui.Context) {
 	theme := kit.OneLight()
-	if c.Theme().Dark { // 在 ApplyTheme 之前，这里还是系统给的主题
+	if c.Theme().Dark { // Before ApplyTheme, this is still the system theme
 		theme = kit.OneDark()
 	}
 	kit.ApplyTheme(c, theme)
 }
 ```
 
-要注意顺序。一旦调用了 `ApplyTheme`，`c.Theme()` 就变成你交给它的主题，之后读到的是你自己的选择，不是系统的。
+Order matters. After you call `ApplyTheme`, `c.Theme()` becomes the theme you passed in. Reading it then returns your choice rather than the system appearance.
 
-画廊的 `cmd/gallery/main.go` 在嵌入模式下就是这样做的：嵌入文档页时，页面通过 MyGo 的 `data-mygo-theme` 属性告诉它当前是明是暗。
+The gallery’s `cmd/gallery/main.go` uses this approach in embed mode. When embedded in a docs page, the page reports its current light or dark appearance through MyGo’s `data-mygo-theme` attribute.
 
-## 三选一：系统、明、暗
+## Choose system, light, or dark
 
-常见的设置项是“系统 / 明 / 暗”，用 [Segmented](/components/segmented) 选，再按选择决定：
+A common setting is “System / Light / Dark”. Use [Segmented](/components/segmented) to select an option, then apply it:
 
 ```go
-var appearance int // 0 系统，1 明，2 暗
+var appearance int // 0 system, 1 light, 2 dark
 
-dark := c.Theme().Dark // 先读系统
+dark := c.Theme().Dark // Read the system appearance first
 switch appearance {
 case 1:
 	dark = false
@@ -74,6 +74,6 @@ if dark {
 kit.ApplyTheme(c, theme)
 ```
 
-## 自定义配色
+## Custom colors
 
-暗色主题和明色一样是普通值，可以改字段后再用，见[主题](/theming)。`Theme.Dark` 字段会告诉 MyGo 用深色的基础样式，所以自己拼主题时要保持它和配色一致。
+Like a light theme, a dark theme is a plain value. You can change its fields before using it. See [Theming](/theming). The `Theme.Dark` field tells MyGo to use dark base styles, so keep it consistent with the colors when building your own theme.

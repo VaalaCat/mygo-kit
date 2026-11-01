@@ -12,15 +12,15 @@ func init() {
 		ui.Column(c).Grow(1).Children(func() {
 			ui.Spacer(c)
 			kit.StatusBar(c, func() {
-				button := kit.StatusButton(c.Key("status-left"), kit.IconPanelLeft, "Toggle sidebar", statusActive)
-				kit.Tooltip(c, button, "Toggle sidebar")
+				button := kit.StatusButton(c.Key("status-left"), kit.IconPanelLeft, t(c, "Toggle sidebar"), statusActive)
+				kit.Tooltip(c, button, t(c, "Toggle sidebar"))
 				if button.Clicked() {
 					statusActive = !statusActive
 				}
-				ui.Text(c, "Connected")
+				ui.Text(c, t(c, "Connected"))
 				ui.Spacer(c)
-				kit.StatusButton(c.Key("status-bottom"), kit.IconPanelBottom, "Terminal", false)
-				kit.StatusButton(c.Key("status-right"), kit.IconPanelRight, "Outline", true)
+				kit.StatusButton(c.Key("status-bottom"), kit.IconPanelBottom, t(c, "Terminal"), false)
+				kit.StatusButton(c.Key("status-right"), kit.IconPanelRight, t(c, "Outline"), true)
 			})
 		})
 	}})

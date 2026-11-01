@@ -27,6 +27,8 @@ func newGalleryImage() kit.ImageResource {
 
 func init() {
 	register(page{name: "Images", order: 34, view: func(c *ui.Context) {
-		kit.ImagePreview(c, galleryImage, &imagePreview).Grow(1)
+		picture := galleryImage
+		picture.Alt = t(c, picture.Alt)
+		kit.ImagePreview(c, picture, &imagePreview).Grow(1)
 	}})
 }

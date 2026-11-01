@@ -1,11 +1,11 @@
 ---
 title: Toast
-description: 窗口右上角的通知：一次 ShowToast 调用，加一个 ToastHost。
+description: Notifications in the top-right corner of the window, using a ShowToast call and a ToastHost.
 ---
 
 # Toast
 
-窗口右上角的通知，最新的在最上面。有信息、成功、错误三种语义，可以带说明和一个操作按钮。
+Notifications in the top-right corner of the window, with the newest at the top. There are three kinds: information, success, and error. Each can include a description and an action button.
 
 <Preview page="Toast" :height="300">
 
@@ -13,53 +13,53 @@ description: 窗口右上角的通知：一次 ShowToast 调用，加一个 Toas
 
 </Preview>
 
-## 用法
+## Usage
 
 ```go
 import kit "github.com/VaalaCat/mygo-kit"
 ```
 
-每个窗口的视图里调用一次 `ToastHost`，通知才会显示。一般放在视图函数开头，用 `defer` 让它最后画：
+Call `ToastHost` once in each window's view to display notifications. Usually, place it at the start of the view function with `defer` so it draws last:
 
 ```go
 func view(c *ui.Context) {
 	kit.ApplyTheme(c, kit.OneLight())
 	defer kit.ToastHost(c)
-	// 画界面
+	// Draw the interface
 }
 ```
 
-要发通知的地方调用 `ShowToast`：
+Call `ShowToast` wherever you want to send a notification:
 
 ```go
-if kit.Button(c, "导出").Clicked() {
-	kit.ShowToast(c, kit.ToastOpt{Title: "会话已导出", Kind: kit.ToastInfo})
+if kit.Button(c, "Export").Clicked() {
+	kit.ShowToast(c, kit.ToastOpt{Title: "Session exported", Kind: kit.ToastInfo})
 }
 ```
 
-窗口空闲时通知也会立刻出现，不用自己请求重绘。
+Notifications appear immediately even when the window is idle. You do not need to request a redraw yourself.
 
-## 示例
+## Examples
 
-### 带操作按钮
+### An action button
 
-`Action` 非空时显示一个文字按钮，点击后先执行 `OnAction`，再关闭通知。
+A nonempty `Action` shows a text button. Clicking it calls `OnAction`, then closes the notification.
 
 ```go
 kit.ShowToast(c, kit.ToastOpt{
-	Title:    "会话已归档",
+	Title:    "Session archived",
 	Kind:     kit.ToastSuccess,
-	Action:   "撤销",
+	Action:   "Undo",
 	OnAction: undoArchive,
 })
 ```
 
-### 错误通知
+### An error notification
 
-错误通知显示 8 秒，比其他通知停留更久。
+Error notifications stay visible for 8 seconds, longer than other notifications.
 
 ```go
-kit.ShowToast(c, kit.ToastOpt{Title: "连接中断", Description: "运行时没有响应。", Kind: kit.ToastError})
+kit.ShowToast(c, kit.ToastOpt{Title: "Connection lost", Description: "The runtime is not responding.", Kind: kit.ToastError})
 ```
 
 ## API
@@ -68,24 +68,24 @@ kit.ShowToast(c, kit.ToastOpt{Title: "连接中断", Description: "运行时没�
 
 `func ToastHost(c *ui.Context) ui.Element`
 
-在窗口右上角、顶栏下方绘制通知。通知宽 360，每条带语义图标、标题、可选说明、操作和关闭按钮。窗口里用了 [TitleBar](/components/title-bar) 时，通知从顶栏下缘留 8 起向下排；没有 TitleBar 时从窗口顶部留 8。每个窗口调用一次。
+Draws notifications in the top-right corner of the window, below the title bar. Each notification is 360 wide and includes an icon for its kind, a title, an optional description, an action, and a close button. When the window uses a [TitleBar](/components/title-bar), notifications stack downward starting 8 below it. Without a TitleBar, they start 8 below the top of the window. Call once per window.
 
 ### ShowToast
 
 `func ShowToast(c *ui.Context, opt ToastOpt)`
 
-窗口里要已经有 `ToastHost`。
+The window must already have a `ToastHost`.
 
 ### ToastOpt
 
-- **Title** `string`：标题。
-- **Description** `string`：次要色说明。可以为空。
-- **Kind** `ToastKind`：语义。零值（空字符串）按信息样式显示。
-- **Action** `string`：操作按钮文字，非空时显示按钮。
-- **OnAction** `func()`：点击操作按钮时调用，之后通知关闭。
+- **Title** `string`: The title.
+- **Description** `string`: A description in the secondary color. Can be empty.
+- **Kind** `ToastKind`: The notification kind. The zero value (an empty string) uses the information style.
+- **Action** `string`: The action button text. The button appears when this is nonempty.
+- **OnAction** `func()`: Called when the action button is clicked, after which the notification closes.
 
 ### ToastKind
 
-- **ToastInfo**：信息，强调色图标。
-- **ToastSuccess**：成功，绿色图标。
-- **ToastError**：错误，危险色图标，停留 8 秒。
+- **ToastInfo**: Information, with an accent-colored icon.
+- **ToastSuccess**: Success, with a green icon.
+- **ToastError**: Error, with a danger-colored icon. Stays visible for 8 seconds.

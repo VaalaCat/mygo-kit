@@ -15,16 +15,16 @@ func init() {
 					kit.ProgressRing(c, value, 20)
 				}
 			})
-			sectionTitle(c, "ProgressBar (4 high)")
+			sectionTitle(c, t(c, "ProgressBar (4 high)"))
 			ui.Column(c).Gap(8).Width(320).Children(func() {
 				for _, value := range []float32{0, .25, progressValue, 1} {
 					kit.ProgressBar(c, value)
 				}
 			})
-			sectionTitle(c, "Context usage")
+			sectionTitle(c, t(c, "Context usage"))
 			ui.Row(c).Gap(8).AlignItems(ui.Center).Children(func() {
 				kit.ProgressRing(c, progressValue, 16)
-				ui.Text(c, "Context window").TextColor(kit.GetTheme(c).Colors.Muted)
+				ui.Text(c, t(c, "Context window")).TextColor(kit.GetTheme(c).Colors.Muted)
 				if kit.Button(c.Key("less"), "−10%").Clicked() {
 					progressValue = max(progressValue-.1, 0)
 				}

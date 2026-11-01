@@ -45,11 +45,13 @@ func showPage(name string) { app.current = name }
 //
 //	go run ./cmd/gallery                       # 完整画廊
 //	go run ./cmd/gallery -page Button -embed   # 只显示 Button 页，文档站预览的样子
+//	go run ./cmd/gallery -lang zh-Hans         # 中文界面
 func main() {
 	// 1. 页面按 order 排序；起始页和嵌入模式来自命令行参数，浏览器里由页面的 go.argv 传入。
 	sort.SliceStable(pages, func(i, j int) bool { return pages[i].order < pages[j].order })
 	pageName := flag.String("page", os.Getenv("KIT_PAGE"), "起始页名称，例如 Button")
 	flag.BoolVar(&app.embed, "embed", false, "只显示起始页，不显示画廊外壳")
+	language := flag.String("lang", "", "界面语言：en 或 zh-Hans；不填时跟随系统")
 	flag.Parse()
 	if err := kit.RegisterFonts(); err != nil {
 		panic(err)
@@ -62,6 +64,9 @@ func main() {
 	// 2. 原生循环和系统窗口仍由应用自己持有。
 	mygo.App.SetName("mygo-kit-gallery")
 	mygo.App.SetLanguages("en", "zh-Hans")
+	if *language != "" {
+		mygo.App.SetLocale(*language)
+	}
 	mygo.App.WhenReady(func() {
 		width := 1180
 		if value, err := strconv.Atoi(os.Getenv("KIT_WIDTH")); err == nil && value > 0 {
@@ -102,8 +107,8 @@ func view(c *ui.Context) {
 	}
 	// 2. 外壳：顶栏、页面导航、页面内容和状态栏。
 	ui.Column(c).Fill().Gap(0).Children(func() {
-		kit.Header(c, "mygo-kit  /  Native workspace", func() {
-			if kit.Button(c.Key("toggle-theme"), "◐ Theme").Clicked() {
+		kit.Header(c, t(c, "mygo-kit  /  Native workspace"), func() {
+			if kit.Button(c.Key("toggle-theme"), t(c, "◐ Theme")).Clicked() {
 				app.dark = !app.dark
 			}
 			if kit.Button(c.Key("toggle-language"), "EN / 中文").Clicked() {
@@ -113,13 +118,13 @@ func view(c *ui.Context) {
 					mygo.App.SetLocale("zh-Hans")
 				}
 			}
-			if kit.Button(c.Key("close-gallery"), "Close").Clicked() {
+			if kit.Button(c.Key("close-gallery"), t(c, "Close")).Clicked() {
 				mygo.App.Quit()
 			}
 		})
 		kit.Split(c, &app.nav, func() {
 			ui.Column(c).Fill().Background(theme.Colors.Panel).Children(func() {
-				kit.Header(c, "COMPONENTS", nil)
+				kit.Header(c, t(c, "COMPONENTS"), nil)
 				ui.Scroll(c).Grow(1).Children(func() {
 					for _, p := range pages {
 						if kit.ListRow(c.Key(p.name), kit.ListRowOpt{Title: p.name, Selected: p.name == current.name}).Clicked() {
@@ -136,9 +141,9 @@ func view(c *ui.Context) {
 			})
 		}).Grow(1)
 		kit.StatusBar(c, func() {
-			ui.Text(c, "● Ready").TextColor(theme.Colors.Success)
+			ui.Text(c, t(c, "● Ready")).TextColor(theme.Colors.Success)
 			ui.Spacer(c)
-			ui.Text(c, "Native UI  ·  "+current.name)
+			ui.Text(c, t(c, "Native UI  ·  ")+current.name)
 		})
 	})
 }

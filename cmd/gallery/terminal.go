@@ -124,15 +124,15 @@ func init() {
 		// 2. 顶栏显示行列数，终端占满页面其余空间。
 		ui.Column(c).Grow(1).Children(func() {
 			rows, cols := d.state.Size()
-			kit.Header(c, fmt.Sprintf("%d rows × %d cols · resized %d times", rows, cols, d.resizes), func() {
-				if kit.Button(c, "Run progress").Clicked() {
+			kit.Header(c, fmt.Sprintf(t(c, "%d rows × %d cols · resized %d times"), rows, cols, d.resizes), func() {
+				if kit.Button(c, t(c, "Run progress")).Clicked() {
 					d.restart()
 				}
 				label := "Mouse reporting: off"
 				if d.mouse {
 					label = "Mouse reporting: on"
 				}
-				if kit.Button(c, label).Clicked() {
+				if kit.Button(c, t(c, label)).Clicked() {
 					d.toggleMouse()
 				}
 			})

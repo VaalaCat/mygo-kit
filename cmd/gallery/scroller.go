@@ -33,7 +33,7 @@ func newScrollerDemo() *scrollerDemo {
 
 func init() {
 	register(page{name: "MessageScroller", order: 40, view: func(c *ui.Context) {
-		t := kit.GetTheme(c)
+		theme := kit.GetTheme(c)
 		// 1. 流式开启时每 120ms 向最后一条追加文字，每 12 次另起一条新消息。
 		if scroller.streaming && c.Now().Sub(scroller.lastTick) >= 120*time.Millisecond {
 			scroller.lastTick = c.Now()
@@ -49,17 +49,17 @@ func init() {
 		}
 		// 2. 工具栏加消息列表。
 		ui.Column(c).Grow(1).Children(func() {
-			kit.Header(c, fmt.Sprintf("%d messages · top reached %d times", len(scroller.messages), scroller.topLoads), func() {
+			kit.Header(c, fmt.Sprintf(t(c, "%d messages · top reached %d times"), len(scroller.messages), scroller.topLoads), func() {
 				label := "Start streaming"
 				if scroller.streaming {
 					label = "Stop streaming"
 				}
-				if kit.Button(c, label).Clicked() {
+				if kit.Button(c, t(c, label)).Clicked() {
 					scroller.streaming = !scroller.streaming
 				}
 			})
 			kit.MessageScroller(c, &scrollerRows, len(scroller.messages), kit.MessageScrollerOpt{OnReachTop: func() { scroller.topLoads++ }}, func(i int) {
-				ui.Column(c).Padding(t.Space(2), t.Space(3)).Radius(t.Metrics.RadiusLarge).Background(t.Colors.Panel).Children(func() {
+				ui.Column(c).Padding(theme.Space(2), theme.Space(3)).Radius(theme.Metrics.RadiusLarge).Background(theme.Colors.Panel).Children(func() {
 					ui.Text(c, scroller.messages[i])
 				})
 			})

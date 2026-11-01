@@ -1,11 +1,11 @@
 ---
 title: Tree
-description: 紧凑的虚拟树，沿用 MyGo 的稳定键、展开和方向键导航。
+description: A compact virtualized tree using MyGo's stable keys, expansion state, and arrow key navigation.
 ---
 
 # Tree
 
-可展开的树，例如文件目录。展开状态、方向键导航和虚拟滚动都是 MyGo 的 `ui.Outline`，本库只加上外观。
+An expandable tree, such as a file directory. MyGo's `ui.Outline` handles expansion state, arrow key navigation, and virtual scrolling. This library only adds styling.
 
 <Preview page="Tree" :height="320">
 
@@ -13,14 +13,14 @@ description: 紧凑的虚拟树，沿用 MyGo 的稳定键、展开和方向键�
 
 </Preview>
 
-## 用法
+## Usage
 
 ```go
 import kit "github.com/VaalaCat/mygo-kit"
 ```
 
 ```go
-var state ui.OutlineState[string] // 展开和选中状态，由应用持有
+var state ui.OutlineState[string] // Expansion and selection state, held by the application
 
 children := map[string][]string{
 	"workspace": {"cmd", "internal"},
@@ -34,7 +34,7 @@ kit.Tree(c, &state, []string{"workspace"}, func(id string) []string { return chi
 }).Grow(1)
 ```
 
-树的节点用你自己的标识 `K` 表示（可以是字符串、数字等可比较的类型）。组件通过 `children` 向你问每个节点的子节点，通过 `row` 让你画每一行。每一行的缩进、展开箭头由 `ui.Outline` 处理。
+Tree nodes use your own identifier `K`, which can be any comparable type, such as a string or number. The component asks for each node's children through `children` and lets you draw each row through `row`. `ui.Outline` handles row indentation and expansion arrows.
 
 ## API
 
@@ -42,7 +42,7 @@ kit.Tree(c, &state, []string{"workspace"}, func(id string) []string { return chi
 
 `func Tree[K comparable](c *ui.Context, state *ui.OutlineState[K], roots []K, children func(K) []K, row func(K)) ui.Element`
 
-- **state** `*ui.OutlineState[K]`：展开状态，由调用方持有。
-- **roots** `[]K`：根节点。
-- **children** `func(K) []K`：返回某个节点的子节点，没有子节点返回空。
-- **row** `func(K)`：绘制某个节点这一行的内容。
+- **state** `*ui.OutlineState[K]`: The expansion state, held by the caller.
+- **roots** `[]K`: The root nodes.
+- **children** `func(K) []K`: Returns a node's children, or an empty result if it has none.
+- **row** `func(K)`: Draws the content of a node's row.

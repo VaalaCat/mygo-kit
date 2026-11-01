@@ -1,11 +1,11 @@
 ---
 title: List
-description: 紧凑的虚拟列表，只构建可见的行，行高可以不一样。
+description: A compact virtualized list that builds only visible rows and supports variable row heights.
 ---
 
 # List
 
-长列表用的虚拟列表。只构建可见的行，一万行也流畅，每行高度可以不同。它是 MyGo `ui.List` 加上工作台外观（无圆角、无内边距、编辑区底色）。
+A virtualized list for long lists. It builds only visible rows, stays smooth with ten thousand rows, and supports different heights for each row. It wraps MyGo's `ui.List` with workbench styling: no corner radius, no padding, and the editor background color.
 
 <Preview page="Virtual list" :height="360">
 
@@ -13,31 +13,31 @@ description: 紧凑的虚拟列表，只构建可见的行，行高可以不一�
 
 </Preview>
 
-## 用法
+## Usage
 
 ```go
 import kit "github.com/VaalaCat/mygo-kit"
 ```
 
 ```go
-var rows = ui.ListState{Key: func(i int) any { return items[i].ID }} // 由应用持有
+var rows = ui.ListState{Key: func(i int) any { return items[i].ID }} // Held by the application
 
 kit.List(c, &rows, len(items), func(i int) {
 	ui.Text(c, items[i].Title).Padding(0, 16)
 }).Grow(1)
 ```
 
-调用方负责：
+The caller is responsible for:
 
-- 持有 `ui.ListState`，行位置和滚动都记在里面。
-- 设置 `Key`，给每一行稳定的身份。数据在前面插入或删除时，滚动位置才不会跳。
-- 在 `row` 里画第 `i` 行。
+- Holding `ui.ListState`, which stores row positions and scrolling.
+- Setting `Key` to give each row a stable identity. This keeps the scroll position from jumping when data is inserted or removed at the start.
+- Using `row` to draw row `i`.
 
-## 相关组件
+## Related components
 
-- 带“回到底部”按钮、跟随最新消息的，用 [MessageScroller](/components/message-scroller)。
-- 树形结构用 [Tree](/components/tree)。
-- 一行一个可点击条目，用 [ListRow](/components/list-row) 来画行。
+- Use [MessageScroller](/components/message-scroller) for a list that follows the latest messages and has a “Back to bottom” button.
+- Use [Tree](/components/tree) for tree structures.
+- Use [ListRow](/components/list-row) to draw a clickable item in each row.
 
 ## API
 
@@ -45,6 +45,6 @@ kit.List(c, &rows, len(items), func(i int) {
 
 `func List(c *ui.Context, state *ui.ListState, count int, row func(int)) ui.Element`
 
-- **state** `*ui.ListState`：列表状态，由调用方持有。
-- **count** `int`：总行数。
-- **row** `func(int)`：绘制第 `i` 行的函数，只会为可见的行调用。
+- **state** `*ui.ListState`: List state, held by the caller.
+- **count** `int`: Total number of rows.
+- **row** `func(int)`: Draws row `i`. Called only for visible rows.

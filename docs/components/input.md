@@ -1,11 +1,11 @@
 ---
 title: Input
-description: 单行输入和多行输入，支持只读值、无边框、前缀图标和错误边线。
+description: Single-line and multiline inputs with read-only values, borderless styling, leading icons, and error borders.
 ---
 
 # Input
 
-单行输入 `TextInput` 和多行输入 `TextArea`。内容、撤销、输入法组字和选区都由 MyGo 管理，组件只负责外观。
+Single-line `TextInput` and multiline `TextArea` inputs. MyGo manages content, undo, input method composition, and selection; these components handle appearance.
 
 <Preview page="Input" :height="520">
 
@@ -13,41 +13,41 @@ description: 单行输入和多行输入，支持只读值、无边框、前缀�
 
 </Preview>
 
-## 用法
+## Usage
 
 ```go
 import kit "github.com/VaalaCat/mygo-kit"
 ```
 
 ```go
-var name string // 由应用持有
+var name string // Held by the application
 
-kit.TextInput(c.Key("name"), &name).Label("名称").Placeholder("项目名称")
+kit.TextInput(c.Key("name"), &name).Label("Name").Placeholder("Project name")
 ```
 
-输入控件必须先用 `c.Key(...)` 给身份，否则界面重建后焦点和光标会丢。内容变化用返回元素的 `.Changed()` 判断，单行输入按下 Enter 用 `.Submitted()` 判断。
+Give each input an identity with `c.Key(...)` first, or it will lose focus and cursor position when the UI is rebuilt. Use `.Changed()` on the returned element to detect content changes, and `.Submitted()` to detect Enter in a single-line input.
 
-## 示例
+## Examples
 
-### 多行输入
+### Multiline input
 
-`TextArea` 最小两行高（56），可以用 `.Height(100)` 或 `.MinHeight(...)` 调整。
+`TextArea` has a minimum height of two lines (56). Adjust it with `.Height(100)` or `.MinHeight(...)`.
 
 ```go
-kit.TextArea(c.Key("desc"), &desc).Label("描述").Placeholder("支持多行和输入法").Height(100)
+kit.TextArea(c.Key("desc"), &desc).Label("Description").Placeholder("Supports multiple lines and input methods").Height(100)
 ```
 
-### 错误状态
+### Error state
 
-`Invalid` 让边线变成危险色，优先于焦点色。错误文字用 [Field](/components/field) 显示。
+`Invalid` gives the border the danger color, taking precedence over the focus color. Show error text with [Field](/components/field).
 
 ```go
-kit.TextInputWith(c.Key("name"), &name, kit.InputOpt{Invalid: name == ""}).Label("名称")
+kit.TextInputWith(c.Key("name"), &name, kit.InputOpt{Invalid: name == ""}).Label("Name")
 ```
 
-### 只读值
+### Read-only value
 
-`ReadOnly` 把输入显示成一段可以选中复制的文字：没有边线和底色，但文字起点和 28 高与普通输入一致，放进 `Field` 时和可编辑字段对齐。
+`ReadOnly` displays the input as selectable, copyable text, without a border or background. Its text starting position and height of 28 match a regular input, so it aligns with editable fields inside a `Field`.
 
 ```go
 kit.Field(c, kit.FieldOpt{Label: "Provider ID"}, func() ui.Element {
@@ -55,30 +55,30 @@ kit.Field(c, kit.FieldOpt{Label: "Provider ID"}, func() ui.Element {
 })
 ```
 
-需要“看起来可以编辑”时不要用它。
+Do not use it when the value should look editable.
 
-### 前缀图标
+### Leading icon
 
-`Leading` 在输入框左侧画一个 14 的次要色图标，长文字会被裁在图标右边，不会盖住图标。
+`Leading` draws a 14-unit icon in the secondary color on the left of the input. Long text is clipped to the right of the icon and cannot cover it.
 
 ```go
-kit.TextInputWith(c.Key("search"), &query, kit.InputOpt{Leading: kit.IconSearch, Placeholder: "搜索"}).Label("搜索")
+kit.TextInputWith(c.Key("search"), &query, kit.InputOpt{Leading: kit.IconSearch, Placeholder: "Search"}).Label("Search")
 ```
 
-### 无边框
+### Borderless input
 
-`Borderless` 去掉边框、底色、内边距和焦点环，外观由外面的容器决定，用于侧栏搜索、消息输入区。
+`Borderless` removes the border, background, padding, and focus ring. The surrounding container controls its appearance. Use it for sidebar search and message composers.
 
 ```go
 box := ui.Column(c).Padding(kit.GetTheme(c).Space(3)).Radius(8).Border(1, kit.GetTheme(c).Colors.Border)
 box.Children(func() {
-	kit.TextAreaWith(c.Key("msg"), &msg, kit.InputOpt{Borderless: true, Placeholder: "消息"}).Label("消息")
+	kit.TextAreaWith(c.Key("msg"), &msg, kit.InputOpt{Borderless: true, Placeholder: "Message"}).Label("Message")
 })
 ```
 
-### 在对话框里
+### Inside a dialog
 
-在 [DialogWith](/components/dialog) 的正文里，只有本库的 `TextInput` / `TextInputWith` 会把 Enter 报告给对话框，Enter 即确认。对话框打开时，焦点落在正文里第一个可编辑的输入。
+In the body of [DialogWith](/components/dialog), only this library's `TextInput` / `TextInputWith` report Enter to the dialog, so Enter confirms it. When the dialog opens, focus moves to the first editable input in its body.
 
 ## API
 
@@ -86,36 +86,36 @@ box.Children(func() {
 
 `func TextInput(c *ui.Context, value *string) ui.Element`
 
-单行输入，等于零值 `InputOpt` 的 `TextInputWith`。
+A single-line input that uses a zero-value `InputOpt` with `TextInputWith`.
 
-- **value** `*string`：输入内容，由调用方持有，输入时直接写回。
+- **value** `*string`: The input content, held by the caller and updated directly as the user types.
 
 ### TextInputWith
 
 `func TextInputWith(c *ui.Context, value *string, opt InputOpt) ui.Element`
 
-28 高的单行输入，文字在高度内垂直居中。
+A single-line input with a height of 28 and vertically centered text.
 
 ### TextArea
 
 `func TextArea(c *ui.Context, value *string) ui.Element`
 
-多行输入，等于零值 `InputOpt` 的 `TextAreaWith`。
+A multiline input that uses a zero-value `InputOpt` with `TextAreaWith`.
 
 ### TextAreaWith
 
 `func TextAreaWith(c *ui.Context, value *string, opt InputOpt) ui.Element`
 
-最小 56 高，保留 MyGo 的组字、选区和受控值处理。
+Has a minimum height of 56 and preserves MyGo's composition, selection, and controlled value handling.
 
 ### InputOpt
 
 `type InputOpt struct`
 
-零值就是普通的可编辑输入。
+The zero value gives a regular editable input.
 
-- **Placeholder** `string`：没有内容时显示的提示。
-- **Invalid** `bool`：边线显示危险色，优先于焦点色。
-- **ReadOnly** `bool`：显示成可选中复制的纯值，没有边线和底色。
-- **Borderless** `bool`：去掉边框、底色、内边距和焦点环。
-- **Leading** `*ui.SVG`：左侧前缀图标，14，次要色。默认 `nil`，不画图标。
+- **Placeholder** `string`: Hint text shown when the input is empty.
+- **Invalid** `bool`: Uses the danger color for the border, taking precedence over the focus color.
+- **ReadOnly** `bool`: Displays a plain value that can be selected and copied, without a border or background.
+- **Borderless** `bool`: Removes the border, background, padding, and focus ring.
+- **Leading** `*ui.SVG`: A leading icon on the left, sized 14 and drawn in the secondary color. Defaults to `nil`, which draws no icon.

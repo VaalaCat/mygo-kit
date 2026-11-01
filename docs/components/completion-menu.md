@@ -1,11 +1,11 @@
 ---
 title: CompletionMenu
-description: 输入框上方的补全浮层，输入框保持焦点，接管上下键、Enter、Tab 和 Esc。
+description: A completion popup above an input that keeps focus in the input and handles the up and down arrows, Enter, Tab, and Esc.
 ---
 
 # CompletionMenu
 
-输入框上方弹出的补全浮层，例如输入 `/` 后列出命令。输入框保持焦点，用户继续打字，浮层只接管几个按键。
+A completion popup above an input, such as a list of commands after typing `/`. The input keeps focus so the user can continue typing; the popup handles only a few keys.
 
 <Preview page="CompletionMenu" :height="480">
 
@@ -13,7 +13,7 @@ description: 输入框上方的补全浮层，输入框保持焦点，接管上�
 
 </Preview>
 
-## 用法
+## Usage
 
 ```go
 import kit "github.com/VaalaCat/mygo-kit"
@@ -23,7 +23,7 @@ import kit "github.com/VaalaCat/mygo-kit"
 box := ui.Column(c.Key("composer")).Padding(8).Radius(8).Border(1, t.Colors.Border)
 var input ui.Element
 box.Children(func() {
-	input = kit.TextAreaWith(c.Key("input"), &text, kit.InputOpt{Borderless: true}).Label("消息")
+	input = kit.TextAreaWith(c.Key("input"), &text, kit.InputOpt{Borderless: true}).Label("Message")
 })
 
 opt := kit.CompletionOpt{Open: strings.HasPrefix(text, "/"), Items: matches(text)}
@@ -32,33 +32,33 @@ if i := kit.CompletionMenu(c, box, input, opt); i >= 0 {
 }
 ```
 
-调用方负责：
+The caller is responsible for:
 
-- 判断什么时候打开（`Open`），并在每帧给出当前的候选。组件不过滤、不排序。
-- 处理选中。返回值 `>= 0` 就是本帧选中的候选序号，把它写回输入框。
+- Deciding when to open (`Open`) and supplying the current candidates every frame. The component does not filter or sort them.
+- Handling selection. A return value `>= 0` is the index of the candidate selected this frame; write it back to the input.
 
-## 按键
+## Keys
 
-有候选时：
+When candidates are available:
 
-- 上下键循环移动高亮。
-- Enter 或 Tab 选中。
-- Esc 关闭，直到 `Open` 变回 false 才会再次出现。
+- The up and down arrows cycle through the highlight.
+- Enter or Tab selects.
+- Esc closes the popup. It will not appear again until `Open` returns to false.
 
-没有候选时只接管 Esc。输入法组字期间不接管任何键。
+When there are no candidates, only Esc is handled. No keys are handled during IME composition.
 
-接管按键用的是 `input` 上的 `HandleInput`，不要再给同一个输入框设置 `HandleInput`；`OnTextKey` 不受影响。
+The `input` element's `HandleInput` handles these keys. Do not set another `HandleInput` on the same input; `OnTextKey` is unaffected.
 
-## 示例
+## Examples
 
-### 加载中和出错
+### Loading and errors
 
-候选还在加载时设 `Loading`，它显示在候选后面（没有候选时单独显示）。出错时设 `Error`。两者都没有、候选也为空时，显示 `Empty`。
+Set `Loading` while candidates are loading. The loading row appears after the candidates, or on its own when there are none. Set `Error` on failure. When neither is set and there are no candidates, `Empty` is shown.
 
 ```go
 kit.CompletionOpt{Open: true, Loading: true}
-kit.CompletionOpt{Open: true, Error: "无法加载技能：连接被拒绝"}
-kit.CompletionOpt{Open: true, Empty: "没有匹配的技能"}
+kit.CompletionOpt{Open: true, Error: "Unable to load skills: connection refused"}
+kit.CompletionOpt{Open: true, Empty: "No matching skills"}
 ```
 
 ## API
@@ -67,23 +67,23 @@ kit.CompletionOpt{Open: true, Empty: "没有匹配的技能"}
 
 `func CompletionMenu(c *ui.Context, anchor, input ui.Element, opt CompletionOpt) (selected int)`
 
-浮层显示在 `anchor` 上方，最多 8 行（候选、加载行、错误行合计），超出滚动。行内容的左缘和 `input` 里的文字对齐。
+The popup appears above `anchor`, with at most 8 rows (including candidates, loading, and error rows), and scrolls when it overflows. The left edge of row content aligns with the text in `input`.
 
-- **anchor** `ui.Element`：浮层依附的元素，通常是包着输入框的那个容器。
-- **input** `ui.Element`：输入框元素，保持焦点。
-- **opt** `CompletionOpt`：浮层的数据和状态。
-- **返回值** `int`：本帧选中的候选序号，没有选中时是 `-1`。
+- **anchor** `ui.Element`: Element the popup is attached to, usually the container wrapping the input.
+- **input** `ui.Element`: Input element that keeps focus.
+- **opt** `CompletionOpt`: Popup data and state.
+- **Return value** `int`: Index of the candidate selected this frame, or `-1` if none was selected.
 
 ### CompletionOpt
 
-- **Open** `bool`：为真才显示浮层。由调用方按输入内容决定，例如光标所在的词以 `/` 开头。
-- **Items** `[]CompletionItem`：候选列表。
-- **Loading** `bool`：在候选后面显示加载行。
-- **Error** `string`：非空时显示一行错误。
-- **Empty** `string`：没有候选、没有加载也没有错误时的提示。为空用内置的“没有匹配项”。
+- **Open** `bool`: Shows the popup only when true. The caller decides based on the input, such as whether the word at the cursor starts with `/`.
+- **Items** `[]CompletionItem`: Candidate list.
+- **Loading** `bool`: Shows a loading row after the candidates.
+- **Error** `string`: Shows an error row when non-empty.
+- **Empty** `string`: Message shown when there are no candidates, loading, or error. Defaults to the built-in “No matches” when empty.
 
 ### CompletionItem
 
-- **Icon** `*ui.SVG`：行首图标。
-- **Title** `string`：标题。
-- **Description** `string`：显示在标题右侧的次要色说明，放不下就截断。
+- **Icon** `*ui.SVG`: Leading icon.
+- **Title** `string`: Title.
+- **Description** `string`: Description in the secondary color, shown to the right of the title and truncated when it does not fit.

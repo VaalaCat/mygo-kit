@@ -1,11 +1,11 @@
 ---
 title: MessageScroller
-description: 跟随最新消息的虚拟列表，上滚后出现“回到底部”按钮，滚到顶时通知加载更早的历史。
+description: A virtualized list that follows the latest messages, shows a “Back to bottom” button after scrolling up, and requests earlier history at the top.
 ---
 
 # MessageScroller
 
-聊天消息用的列表。默认跟随最新消息；用户往上滚后，右下角浮出一个“回到底部”按钮。滚到顶部时通知你加载更早的历史。
+A list for chat messages. It follows the latest messages by default. When the user scrolls up, a “Back to bottom” button appears at the bottom right. Reaching the top notifies you to load earlier history.
 
 <Preview page="MessageScroller" :height="460">
 
@@ -13,14 +13,14 @@ description: 跟随最新消息的虚拟列表，上滚后出现“回到底部�
 
 </Preview>
 
-## 用法
+## Usage
 
 ```go
 import kit "github.com/VaalaCat/mygo-kit"
 ```
 
 ```go
-var rows = ui.ListState{Key: func(i int) any { return messages[i].ID }} // 由应用持有
+var rows = ui.ListState{Key: func(i int) any { return messages[i].ID }} // Held by the application
 
 kit.MessageScroller(c, &rows, len(messages), kit.MessageScrollerOpt{
 	OnReachTop: loadOlder,
@@ -29,18 +29,18 @@ kit.MessageScroller(c, &rows, len(messages), kit.MessageScrollerOpt{
 })
 ```
 
-调用方负责：
+The caller is responsible for:
 
-- 持有 `ui.ListState`。
-- 设置 `Key`，用稳定身份标识每条消息。前插历史时，滚动位置才会保持不动。
-- 在 `OnReachTop` 里加载更早的消息，加到列表前面。
+- Holding `ui.ListState`.
+- Setting `Key` to identify each message with a stable identity, so prepending history preserves the scroll position.
+- Loading earlier messages in `OnReachTop` and prepending them to the list.
 
-## 行为
+## Behavior
 
-- 组件会把 `state.FollowEnd` 设为 true，在尾部时新增内容跟随到底；允许动画时，新内容从下方滑入。
-- `OnReachTop` 在用户从没到顶变为到顶时调用一次；离开顶部后再次回到顶部才会再次调用。
-- 不在尾部时，右下角浮出圆形的向下箭头按钮，点击滚到底部。按钮的可访问名称是“回到底部”。
-- 流式追加：直接改最后一条消息的文字，列表在尾部就会继续跟随。
+- The component sets `state.FollowEnd` to true. When at the end, it follows new content to the bottom. When motion is allowed, new content slides in from below.
+- `OnReachTop` is called once when the user reaches the top from another scroll position. It is called again only after leaving the top and returning.
+- When away from the end, a circular down-arrow button appears at the bottom right. Clicking it scrolls to the bottom. Its accessible name is “Back to bottom”.
+- For streaming updates, change the text of the last message directly. The list keeps following while it is at the end.
 
 ## API
 
@@ -48,13 +48,13 @@ kit.MessageScroller(c, &rows, len(messages), kit.MessageScrollerOpt{
 
 `func MessageScroller(c *ui.Context, state *ui.ListState, count int, opt MessageScrollerOpt, row func(int)) ui.Element`
 
-行间距 16，列表内边距 16。
+Row spacing and list padding are both 16.
 
-- **state** `*ui.ListState`：列表状态，由调用方持有。
-- **count** `int`：消息总数。
-- **opt** `MessageScrollerOpt`：见下。
-- **row** `func(int)`：绘制第 `i` 条消息。
+- **state** `*ui.ListState`: List state, held by the caller.
+- **count** `int`: Total number of messages.
+- **opt** `MessageScrollerOpt`: See below.
+- **row** `func(int)`: Draws message `i`.
 
 ### MessageScrollerOpt
 
-- **OnReachTop** `func()`：滚到顶部时调用一次。可以为 `nil`。
+- **OnReachTop** `func()`: Called once when scrolling reaches the top. May be `nil`.

@@ -10,8 +10,8 @@ var checkboxChecked bool
 func init() {
 	register(page{name: "Checkbox", order: 13, view: func(c *ui.Context) {
 		pageBody(c, func() {
-			kit.Checkbox(c, &checkboxChecked, "Auto-save")
-			kit.Checkbox(c.Key("disabled"), &checkboxChecked, "Disabled").Disabled(true)
+			kit.Checkbox(c, &checkboxChecked, t(c, "Auto-save"))
+			kit.Checkbox(c.Key("disabled"), &checkboxChecked, t(c, "Disabled")).Disabled(true)
 		})
 	}})
 }

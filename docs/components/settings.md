@@ -1,11 +1,11 @@
 ---
 title: Settings
-description: 设置页：SettingPage 页面，SettingSection 小节，SettingRow 一行设置。
+description: Settings pages built from SettingPage, SettingSection, and SettingRow.
 ---
 
 # Settings
 
-三个组件拼出一个设置页：`SettingPage` 是整页（固定页头加滚动的内容），`SettingSection` 是带标题的圆角框，`SettingRow` 是框里的一行“标题 加 控件”。
+Three components make up a settings page: `SettingPage` is the full page with a fixed header and scrolling content, `SettingSection` is a rounded box with a heading, and `SettingRow` is a row containing a title and a control inside that box.
 
 <Preview page="Settings form" :height="520">
 
@@ -13,40 +13,40 @@ description: 设置页：SettingPage 页面，SettingSection 小节，SettingRow
 
 </Preview>
 
-## 用法
+## Usage
 
 ```go
 import kit "github.com/VaalaCat/mygo-kit"
 ```
 
 ```go
-kit.SettingPage(c, "设置", func() {
-	kit.Button(c.Key("revert"), "还原")
-	kit.PrimaryButton(c.Key("apply"), "应用")
+kit.SettingPage(c, "Settings", func() {
+	kit.Button(c.Key("revert"), "Revert")
+	kit.PrimaryButton(c.Key("apply"), "Apply")
 }, func() {
-	kit.SettingSection(c.Key("general"), "通用", func() {
-		kit.SettingRow(c.Key("motion"), "减少动画", "关闭过渡和转圈。", func() {
-			kit.Switch(c.Key("motion-switch"), &reduceMotion, "").Label("减少动画")
+	kit.SettingSection(c.Key("general"), "General", func() {
+		kit.SettingRow(c.Key("motion"), "Reduce motion", "Turn off transitions and spinning animations.", func() {
+			kit.Switch(c.Key("motion-switch"), &reduceMotion, "").Label("Reduce motion")
 		})
-		kit.SettingRow(c.Key("theme"), "配色", "", func() {
-			kit.Select(c.Key("theme-select"), &theme, kit.SelectOpt{Bordered: true, Options: options}).Label("配色")
+		kit.SettingRow(c.Key("theme"), "Color scheme", "", func() {
+			kit.Select(c.Key("theme-select"), &theme, kit.SelectOpt{Bordered: true, Options: options}).Label("Color scheme")
 		})
 	})
 })
 ```
 
-同一页里的小节和行都要用 `c.Key(...)` 区分。右侧的控件没有可见标题，请用 `.Label(...)` 给出可访问名称。
+Use `c.Key(...)` to distinguish sections and rows on the same page. Controls on the right have no visible title, so provide an accessible name with `.Label(...)`.
 
-## 示例
+## Examples
 
-### 小节里放表单
+### A form inside a section
 
-`SettingSection` 的内容不一定是 `SettingRow`，也可以放一列 [Field](/components/field)，自己加内边距：
+`SettingSection` does not have to contain `SettingRow` components. It can also contain a column of [Field](/components/field) components with padding you set yourself:
 
 ```go
-kit.SettingSection(c.Key("provider"), "模型服务", func() {
+kit.SettingSection(c.Key("provider"), "Model provider", func() {
 	ui.Column(c).Padding(12).Gap(16).Children(func() {
-		kit.Field(c, kit.FieldOpt{Label: "Base URL", Description: "包含 /v1 后缀。"}, func() ui.Element {
+		kit.Field(c, kit.FieldOpt{Label: "Base URL", Description: "Include the /v1 suffix."}, func() ui.Element {
 			return kit.TextInput(c.Key("url"), &baseURL)
 		})
 	})
@@ -59,27 +59,27 @@ kit.SettingSection(c.Key("provider"), "模型服务", func() {
 
 `func SettingPage(c *ui.Context, title string, actions, content func()) ui.Element`
 
-页头是 36 高的标题栏，不随内容滚动。内容区在页头下方滚动，左右上下边距 24，最宽 720，靠左，小节之间间距 24。
+The header is a title bar with a height of 36 that does not scroll with the content. Content scrolls below it, with padding of 24 on all sides, a maximum width of 720, left alignment, and a gap of 24 between sections.
 
-- **title** `string`：页面标题。
-- **actions** `func()`：页头右侧的操作，可以为 `nil`。
-- **content** `func()`：绘制各个小节的函数。
+- **title** `string`: The page title.
+- **actions** `func()`: Actions on the right side of the header. Can be `nil`.
+- **content** `func()`: A function that draws the sections.
 
 ### SettingSection
 
 `func SettingSection(c *ui.Context, title string, rows func()) ui.Element`
 
-上方是小节标题（16/24），下方是圆角 8 的框，行之间有 1 像素分隔线。
+A section heading (16/24) sits above a box with a corner radius of 8. Rows have 1-pixel separators.
 
-- **title** `string`：小节标题。
-- **rows** `func()`：绘制若干 `SettingRow` 的函数。
+- **title** `string`: The section heading.
+- **rows** `func()`: A function that draws the `SettingRow` components.
 
 ### SettingRow
 
 `func SettingRow(c *ui.Context, title, description string, control func()) ui.Element`
 
-行高至少 36。左侧是标题和可选说明，文字太长会换行；右侧是控件，保持原宽。
+Rows are at least 36 high. The title and optional description sit on the left and wrap when too long. The control sits on the right and keeps its original width.
 
-- **title** `string`：标题。
-- **description** `string`：12/16 的次要色说明，可以为空。
-- **control** `func()`：绘制右侧控件的函数。
+- **title** `string`: The title.
+- **description** `string`: A description in 12/16 text using the secondary color. Can be empty.
+- **control** `func()`: A function that draws the control on the right.

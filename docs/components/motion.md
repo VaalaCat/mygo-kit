@@ -1,36 +1,36 @@
 ---
 title: Motion
-description: 减少动画的统一规则，以及淡入淡出的 Fade。
+description: Shared reduced-motion rules and the Fade transition.
 ---
 
 # Motion
 
-本库的动画都很短，并且有同一套开关：`Theme.Motion.Reduced` 为真，或系统要求减少动画（`c.Preferences().ReduceMotion`）时，所有动画直接到达终点。
+All animations in this library are brief and share the same controls. When `Theme.Motion.Reduced` is true or the system requests reduced motion (`c.Preferences().ReduceMotion`), every animation moves directly to its end state.
 
-动画时长放在主题里，默认值如下：
+Animation durations are stored in the theme, with these defaults:
 
-- `Motion.Fade`：120ms，淡入淡出、开关滑块、MorphText。
-- `Motion.DisclosureOpen`：200ms，Disclosure 和 ActivityCard 展开。
-- `Motion.DisclosureClose`：150ms，收起。
+- `Motion.Fade`: 120ms for fading, switch thumbs, and MorphText.
+- `Motion.DisclosureOpen`: 200ms for expanding Disclosure and ActivityCard.
+- `Motion.DisclosureClose`: 150ms for collapsing.
 
-## 用法
+## Usage
 
 ```go
 import kit "github.com/VaalaCat/mygo-kit"
 ```
 
-### 淡入淡出
+### Fading
 
-`Fade` 按 `visible` 把元素的不透明度渐变到 1 或 0。
+`Fade` transitions an element's opacity to 1 or 0 according to `visible`.
 
 ```go
-panel := ui.Column(c).Children(func() { ui.Text(c, "提示") })
+panel := ui.Column(c).Children(func() { ui.Text(c, "Hint") })
 kit.Fade(c, panel, showing)
 ```
 
-`visible` 为 false 时，元素立刻被禁用，不再响应点击和键盘，透明度只影响绘制。要真正把它从布局里去掉，由调用方不再创建它。
+When `visible` is false, the element is immediately disabled and stops responding to clicks and keyboard input. Opacity affects drawing only. To remove it from the layout, the caller must stop creating it.
 
-### 关闭本库的动画
+### Disabling library animations
 
 ```go
 theme := kit.OneLight()
@@ -38,14 +38,14 @@ theme.Motion.Reduced = true
 kit.ApplyTheme(c, theme)
 ```
 
-主题里的开关不会自动跟随系统，不过各组件会同时检查系统偏好，所以系统要求减少动画时即使 `Reduced` 为 false 也会静止。
+The theme setting does not automatically follow the system, but components also check system preferences. They therefore remain still when the system requests reduced motion, even if `Reduced` is false.
 
-## 相关组件
+## Related components
 
-- [Spinner](/components/spinner)：每秒一圈的加载图标。
-- [Shimmer](/components/shimmer)：高亮扫过的文字。
-- [MorphText](/components/morph-text)：字素级的文字变化。
-- [Disclosure](/components/disclosure)：展开和收起的高度过渡。
+- [Spinner](/components/spinner): A loading icon that rotates once per second.
+- [Shimmer](/components/shimmer): Text with a moving highlight.
+- [MorphText](/components/morph-text): Grapheme-level text transitions.
+- [Disclosure](/components/disclosure): Height transitions when expanding and collapsing.
 
 ## API
 
@@ -53,16 +53,16 @@ kit.ApplyTheme(c, theme)
 
 `func Fade(c *ui.Context, element ui.Element, visible bool) ui.Element`
 
-更新元素的可见透明度，返回同一个元素。
+Updates the element's opacity and returns the same element.
 
-- **element** `ui.Element`：要淡入淡出的元素。
-- **visible** `bool`：目标状态，true 渐变到完全可见，false 渐变到完全透明并禁用。
+- **element** `ui.Element`: The element to fade in or out.
+- **visible** `bool`: The target state. True transitions to fully visible; false transitions to fully transparent and disables the element.
 
 ### Motion
 
-`type Motion struct`，在 `Theme.Motion` 里。
+`type Motion struct`, stored in `Theme.Motion`.
 
-- **Fade** `time.Duration`：淡入淡出时长，默认 120ms。
-- **DisclosureOpen** `time.Duration`：展开时长，默认 200ms。
-- **DisclosureClose** `time.Duration`：收起时长，默认 150ms。
-- **Reduced** `bool`：为真时关闭本库的动画。默认 `false`。
+- **Fade** `time.Duration`: Fade duration. Defaults to 120ms.
+- **DisclosureOpen** `time.Duration`: Expansion duration. Defaults to 200ms.
+- **DisclosureClose** `time.Duration`: Collapse duration. Defaults to 150ms.
+- **Reduced** `bool`: Disables library animations when true. Defaults to `false`.

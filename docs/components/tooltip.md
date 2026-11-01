@@ -1,35 +1,35 @@
 ---
 title: Tooltip
-description: 悬停或键盘聚焦时显示的简短提示，每个锚点独立计时。
+description: A short hint shown on hover or keyboard focus, with an independent timer for each anchor.
 ---
 
 # Tooltip
 
-给一个元素加悬停提示。指针停在锚点上 600ms 后显示；键盘聚焦到锚点（出现焦点环）时立即显示。Esc 行为沿用 MyGo。
+Adds a hover hint to an element. It appears after the pointer rests on the anchor for 600ms, or immediately when the anchor receives keyboard focus (with a focus ring). Esc behavior comes from MyGo.
 
-画廊里没有单独的 Tooltip 页，示例在 Dialog 页的最下面，也能在 StatusBar 页里悬停左侧按钮看到。
+The gallery has no separate Tooltip page. An example appears at the bottom of the Dialog page, and you can also hover over the left button on the StatusBar page to see one.
 
-## 用法
+## Usage
 
 ```go
 import kit "github.com/VaalaCat/mygo-kit"
 ```
 
 ```go
-button := kit.Button(c.Key("save"), "保存")
-kit.Tooltip(c, button, "保存当前文档")
+button := kit.Button(c.Key("save"), "Save")
+kit.Tooltip(c, button, "Save the current document")
 if button.Clicked() {
-	// 保存
+	// Save
 }
 ```
 
-提示文字同时被设为锚点的可访问描述。
+The hint text is also set as the anchor's accessible description.
 
-## 提示
+## Tips
 
-- 图标按钮想要提示，直接用 [IconButtonTip](/components/button)，不用自己配 `Tooltip` 和 `Label`。
-- 每个锚点单独计时，指针从一个按钮移到另一个按钮时，不会立即显示后者的提示。
-- 提示是单行短句，不要放操作或可点击的内容，这种内容用 [Popover](/components/popover)。
+- For an icon button with a hint, use [IconButtonTip](/components/button) directly instead of combining `Tooltip` and `Label` yourself.
+- Each anchor keeps its own timer. Moving the pointer from one button to another does not immediately show the second button's hint.
+- Use a short, single-line hint. For actions or clickable content, use a [Popover](/components/popover).
 
 ## API
 
@@ -37,9 +37,9 @@ if button.Clicked() {
 
 `func Tooltip(c *ui.Context, anchor ui.Element, text string) ui.Element`
 
-提示浮层圆角 8，浮层底色，细边框，文字 12/16。
+The hint popup has a corner radius of 8, a popup background, a thin border, and 12/16 text.
 
-- **anchor** `ui.Element`：要加提示的元素。
-- **text** `string`：提示文字。
+- **anchor** `ui.Element`: The element to attach the hint to.
+- **text** `string`: The hint text.
 
-返回提示元素。锚点自己仍然是你拿着的那个变量，点击、焦点照常处理。
+Returns the hint element. The anchor remains the element in your original variable; handle clicks and focus on it as usual.

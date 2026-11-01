@@ -1,11 +1,11 @@
 ---
 title: Tabs
-description: 连续页签条，以及 Dock 和终端里用的可关闭标签 Tab。
+description: A continuous tab strip and the closable Tab used in Docks and terminals.
 ---
 
 # Tabs
 
-页签条。选中的页签用正文底色并断开底线，和下面的内容连成一片。
+A tab strip. The selected tab uses the main content background and has no bottom border, joining it visually to the content below.
 
 <Preview page="Tabs" :height="240">
 
@@ -13,29 +13,29 @@ description: 连续页签条，以及 Dock 和终端里用的可关闭标签 Tab
 
 </Preview>
 
-## 用法
+## Usage
 
 ```go
 import kit "github.com/VaalaCat/mygo-kit"
 ```
 
 ```go
-tab := 0 // 选中页签的序号，由应用持有
+tab := 0 // Index of the selected tab, held by the application
 
-kit.Tabs(c, &tab, []string{"常规", "编辑器", "高级"})
+kit.Tabs(c, &tab, []string{"General", "Editor", "Advanced"})
 switch tab {
 case 0:
-	// 画“常规”的内容
+	// Draw the General content
 }
 ```
 
-`Tabs` 只画页签条，下面的内容由你按 `tab` 的值自己画。方向键切换页签由 MyGo 提供，焦点环只在键盘聚焦时出现，并且始终跟着选中的页签。
+`Tabs` only draws the tab strip. Draw the content below it yourself based on `tab`. MyGo provides arrow key navigation. The focus ring appears only with keyboard focus and always follows the selected tab.
 
-## 示例
+## Examples
 
-### 可关闭的标签
+### Closable tabs
 
-`Tab` 画一个 Zed 风格的单个标签，常用于终端、编辑器这类可以多开的面板。它返回本帧是否点了标签、点了关闭按钮。选中、关闭后怎么处理都由调用方决定。
+`Tab` draws a single Zed-style tab, typically used for panels that can have multiple instances, such as terminals and editors. It returns whether the tab or its close button was clicked this frame. The caller decides what happens after selection or closure.
 
 ```go
 for i, session := range sessions {
@@ -43,18 +43,18 @@ for i, session := range sessions {
 		Icon:       kit.IconTerminal,
 		Title:      session.Title,
 		Selected:   i == current,
-		CloseLabel: "关闭",
+		CloseLabel: "Close",
 	})
 	if clicked {
 		current = i
 	}
 	if closed {
-		// 移除 session
+		// Remove session
 	}
 }
 ```
 
-放在 [Workspace](/components/workspace) 的 `Panel.Header` 里时，标签和 Dock 标题栏同高，放不下会横向滚动。
+When placed in a [Workspace](/components/workspace) panel's `Panel.Header`, tabs match the Dock title bar height and scroll horizontally when they do not fit.
 
 ## API
 
@@ -62,21 +62,21 @@ for i, session := range sessions {
 
 `func Tabs(c *ui.Context, selected *int, labels []string) ui.Element`
 
-36 高的页签条，页签之间用竖线分隔，右侧空白补一条底线。
+A tab strip with a height of 36, vertical separators between tabs, and a bottom border across the empty space on the right.
 
-- **selected** `*int`：选中页签的序号，由调用方持有。
-- **labels** `[]string`：每个页签的文字，同时是可访问名称。
+- **selected** `*int`: The index of the selected tab, held by the caller.
+- **labels** `[]string`: Each tab's text, also used as its accessible name.
 
 ### Tab
 
 `func Tab(c *ui.Context, opt TabOpt) (clicked, closed bool)`
 
-与标题栏同高（36）、无圆角的可关闭标签。选中时用正文底色加左右竖线，未选中时用面板底色加右竖线和底线。关闭按钮在悬停或选中时出现。新选中的标签会滚进所在的标签条。
+A closable tab with square corners and the same height as the title bar (36). A selected tab uses the main content background with vertical borders on both sides. An unselected tab uses the panel background with right and bottom borders. The close button appears on hover or when selected. A newly selected tab scrolls into view within its tab strip.
 
 ### TabOpt
 
-- **Icon** `*ui.SVG`：标题前的图标，14。可以为 `nil`。
-- **Title** `string`：标题，最宽 192，超出用省略号截断。
-- **Selected** `bool`：是否选中。
-- **Faded** `bool`：标题用弱化色，例如进程已结束的终端。
-- **CloseLabel** `string`：关闭按钮的可访问名称。
+- **Icon** `*ui.SVG`: An icon before the title, size 14. Can be `nil`.
+- **Title** `string`: The title, with a maximum width of 192. Longer text is truncated with an ellipsis.
+- **Selected** `bool`: Whether the tab is selected.
+- **Faded** `bool`: Uses a muted color for the title, for example for a terminal whose process has exited.
+- **CloseLabel** `string`: The close button's accessible name.

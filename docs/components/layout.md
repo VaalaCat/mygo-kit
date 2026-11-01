@@ -1,13 +1,13 @@
 ---
 title: Layout
-description: 排版小件：标题栏 Header、分隔线 Separator、可拖宽的 Split、空状态 EmptyState。
+description: Layout helpers for panel headers, separators, resizable split panels, and empty states.
 ---
 
 # Layout
 
-几个排版用的小件。画廊里没有单独的页面，它们出现在其他页面的外壳里，例如 [Workspace](/components/workspace) 用到了 `Header` 和 `Split`，画廊的 Workspace 页中间区是一个 `EmptyState`。
+A few small layout helpers. They have no separate gallery page and appear in the shells of other pages. For example, [Workspace](/components/workspace) uses `Header` and `Split`, and the center area of the gallery's Workspace page is an `EmptyState`.
 
-## 用法
+## Usage
 
 ```go
 import kit "github.com/VaalaCat/mygo-kit"
@@ -15,25 +15,25 @@ import kit "github.com/VaalaCat/mygo-kit"
 
 ### Header
 
-36 高的面板标题栏，左边是标题，右边是 `actions` 画的工具按钮。底部有一条分隔线，会和下面的内容共用。
+A panel header with a height of 36. The title is on the left, and `actions` draws toolbar buttons on the right. Its bottom separator is shared with the content below.
 
 ```go
-kit.Header(c, "会话", func() {
-	kit.IconButtonTip(c.Key("new"), kit.IconPlus, "新建")
+kit.Header(c, "Conversations", func() {
+	kit.IconButtonTip(c.Key("new"), kit.IconPlus, "New")
 })
 ```
 
-需要把标题换成别的内容，或者对齐到另一条左线，用 `HeaderWith`：
+Use `HeaderWith` to replace the title with other content or align it to a different left edge:
 
 ```go
 kit.HeaderWith(c, "", kit.HeaderOpt{Inset: 16, Leading: func() {
-	kit.Segmented(c, &view, []string{"会话", "归档"})
+	kit.Segmented(c, &view, []string{"Conversations", "Archived"})
 }}, nil)
 ```
 
 ### Separator
 
-一条 1 像素的水平分隔线。
+A horizontal separator one pixel high.
 
 ```go
 kit.Separator(c)
@@ -41,27 +41,27 @@ kit.Separator(c)
 
 ### Split
 
-两个可以拖宽的连续面板，中间是 MyGo 的分隔线。`size` 是第一块的宽度，拖动时直接写回。
+Two adjacent resizable panels, with a MyGo divider between them. `size` is the width of the first panel and is updated directly when the divider is dragged.
 
 ```go
-sidebarWidth := float32(240) // 由应用持有
+sidebarWidth := float32(240) // Held by the application
 
 kit.Split(c, &sidebarWidth, func() {
-	// 左侧
+	// Left side
 }, func() {
-	// 右侧
+	// Right side
 }).Grow(1)
 ```
 
 ### EmptyState
 
-在区域中央显示一行提示，可以带一行次要说明，也可以带一个主按钮：
+Displays a message in the center of an area, with an optional secondary description line and primary button:
 
 ```go
-kit.EmptyState(c, "还没有会话", "点击左上角的加号新建一个。")
+kit.EmptyState(c, "No conversations yet", "Click the plus button at the top left to create one.")
 
-kit.EmptyStateWith(c, "还没有会话", "", kit.EmptyStateOpt{
-	ActionLabel: "新建会话",
+kit.EmptyStateWith(c, "No conversations yet", "", kit.EmptyStateOpt{
+	ActionLabel: "New conversation",
 	OnAction:    newConversation,
 })
 ```
@@ -72,10 +72,10 @@ kit.EmptyStateWith(c, "还没有会话", "", kit.EmptyStateOpt{
 
 `func Header(c *ui.Context, title string, actions func()) ui.Element`
 
-36 高，标题距左缘 12，单行截断。
+Has a height of 36, with the title inset 12 from the left edge and truncated to one line.
 
-- **title** `string`：标题文字。
-- **actions** `func()`：绘制右侧工具按钮的函数，可以为 `nil`。
+- **title** `string`: Title text.
+- **actions** `func()`: Draws toolbar buttons on the right. May be `nil`.
 
 ### HeaderWith
 
@@ -83,32 +83,32 @@ kit.EmptyStateWith(c, "还没有会话", "", kit.EmptyStateOpt{
 
 ### HeaderOpt
 
-- **Inset** `float32`：标题文字距左缘的距离，用来对齐所在列的左线。侧栏和 Dock 用 12，对话区用 16。零值取 12。
-- **Leading** `func()`：替换标题文字，例如放一组分段控件。内容从 `Inset` 处开始，标题栏的高度和底线不变。为空时显示 `title`。
+- **Inset** `float32`: Distance from the left edge to the title text, used to align it with the column's left edge. Sidebars and docks use 12; conversation areas use 16. A zero value uses 12.
+- **Leading** `func()`: Replaces the title text, for example with a segmented control. Content starts at `Inset`; the header's height and bottom separator stay the same. When unset, displays `title`.
 
 ### Separator
 
 `func Separator(c *ui.Context) ui.Element`
 
-1 高，颜色是 `Colors.BorderSubtle`，不会被压缩。
+Has a height of 1, uses `Colors.BorderSubtle`, and does not shrink.
 
 ### Split
 
 `func Split(c *ui.Context, size *float32, first, second func()) ui.Element`
 
-两块都铺满，不加外框，圆角 0。
+Both panels fill their available space, with no outer border and a corner radius of 0.
 
-- **size** `*float32`：第一块的宽度，由调用方持有。拖动分隔线时被改写，用返回元素的 `.Changed()` 可以知道本帧是否被拖动。
-- **first**、**second** `func()`：分别绘制两块的内容。
+- **size** `*float32`: The width of the first panel, held by the caller. Dragging the divider updates it. Use `.Changed()` on the returned element to detect whether it was dragged in the current frame.
+- **first**, **second** `func()`: Draw the contents of the two panels, respectively.
 
 ### EmptyState
 
 `func EmptyState(c *ui.Context, title, detail string) ui.Element`
 
-居中显示，占满父容器剩余空间。标题是次要色，说明是占位色。
+Centers its content and fills the parent's remaining space. The title uses the secondary color; the description uses the placeholder color.
 
-- **title** `string`：标题。
-- **detail** `string`：说明，可以为空。
+- **title** `string`: Title.
+- **detail** `string`: Description. May be empty.
 
 ### EmptyStateWith
 
@@ -116,5 +116,5 @@ kit.EmptyStateWith(c, "还没有会话", "", kit.EmptyStateOpt{
 
 ### EmptyStateOpt
 
-- **ActionLabel** `string`：非空时在文字下方居中显示一个主按钮。
-- **OnAction** `func()`：点击主按钮时调用。
+- **ActionLabel** `string`: When nonempty, displays a primary button centered below the text.
+- **OnAction** `func()`: Called when the primary button is clicked.

@@ -1,5 +1,5 @@
 <!--
-  Preview 是组件页里的「预览 | 代码」块：预览页签用 iframe 运行画廊的一页（WebAssembly），
+  Preview 是组件页里的「预览 | 代码」块；标签文字和画廊里 kit 自带的文案跟随页面语言：预览页签用 iframe 运行画廊的一页（WebAssembly），
   代码页签显示默认插槽里的源码，通常是 <<< 引入的画廊源文件。
 
   <Preview page="Button" :height="360">
@@ -13,7 +13,7 @@
 -->
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from "vue"
-import { withBase } from "vitepress"
+import { useData, withBase } from "vitepress"
 
 const props = withDefaults(defineProps<{ page: string; height?: number; width?: number }>(), { height: 360 })
 const tab = ref<"preview" | "code">("preview")
@@ -33,19 +33,28 @@ const iframeStyle = computed(() =>
     ? { height: `${props.height}px` }
     : { width: `${props.width}px`, height: `${props.height / scale.value}px`, transform: `scale(${scale.value})`, transformOrigin: "0 0" },
 )
-const src = withBase(`/preview/?page=${encodeURIComponent(props.page)}`)
-const fullSrc = withBase(`/preview/?page=${encodeURIComponent(props.page)}&full`)
+// 2. 中文页让画廊用 zh-Hans，其余用英文。
+const { lang } = useData()
+const isChinese = computed(() => lang.value.startsWith("zh"))
+const labels = computed(() =>
+  isChinese.value
+    ? { preview: "预览", code: "代码", open: "在画廊中打开 ↗", frame: "预览" }
+    : { preview: "Preview", code: "Code", open: "Open in gallery ↗", frame: "preview" },
+)
+const query = computed(() => `page=${encodeURIComponent(props.page)}&lang=${isChinese.value ? "zh-Hans" : "en"}`)
+const src = computed(() => withBase(`/preview/?${query.value}`))
+const fullSrc = computed(() => withBase(`/preview/?${query.value}&full`))
 </script>
 
 <template>
   <div class="kit-preview">
     <div class="kit-preview-tabs" role="tablist">
-      <button role="tab" :aria-selected="tab === 'preview'" :class="{ active: tab === 'preview' }" @click="tab = 'preview'">预览</button>
-      <button role="tab" :aria-selected="tab === 'code'" :class="{ active: tab === 'code' }" @click="tab = 'code'">代码</button>
-      <a class="kit-preview-open" :href="fullSrc" target="_blank" rel="noopener">在画廊中打开 ↗</a>
+      <button role="tab" :aria-selected="tab === 'preview'" :class="{ active: tab === 'preview' }" @click="tab = 'preview'">{{ labels.preview }}</button>
+      <button role="tab" :aria-selected="tab === 'code'" :class="{ active: tab === 'code' }" @click="tab = 'code'">{{ labels.code }}</button>
+      <a class="kit-preview-open" :href="fullSrc" target="_blank" rel="noopener">{{ labels.open }}</a>
     </div>
     <div v-show="tab === 'preview'" ref="frame" class="kit-preview-frame" :style="{ height: `${height}px` }">
-      <iframe :src="src" :style="iframeStyle" loading="lazy" :title="`${page} 预览`" />
+      <iframe :src="src" :style="iframeStyle" loading="lazy" :title="`${page} ${labels.frame}`" />
     </div>
     <div v-show="tab === 'code'" class="kit-preview-code">
       <slot />

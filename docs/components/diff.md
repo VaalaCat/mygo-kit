@@ -1,13 +1,13 @@
 ---
 title: Diff
-description: 原生的完整文件 diff：增删行号、选择和复制，状态由 MyGo 的 DiffState 持有。
+description: A native full-file diff with added and removed line numbers, selection, and copying, using MyGo's DiffState.
 ---
 
 # Diff
 
-两份文本的对比，可以左右并排（`editor.DiffSplit`，默认），也可以合并成一列（`editor.DiffUnified`）。差异算法、选择和复制都是 MyGo 编辑器的 `DiffView`，本库只设置颜色和字体，让它和其他面板一致。
+Compares two texts, either side by side (`editor.DiffSplit`, the default) or in one combined column (`editor.DiffUnified`). The diff algorithm, selection, and copying all come from the MyGo editor's `DiffView`. This library only sets colors and fonts to match the other panels.
 
-只想显示一段已经解析好的补丁，不是比较两份完整文本，用 [PatchLines](/components/patch)。
+To display an already-parsed patch instead of comparing two complete texts, use [PatchLines](/components/patch).
 
 <Preview page="Diff" :height="320">
 
@@ -15,7 +15,7 @@ description: 原生的完整文件 diff：增删行号、选择和复制，状�
 
 </Preview>
 
-## 用法
+## Usage
 
 ```go
 import (
@@ -35,9 +35,9 @@ var diff = editor.DiffState{
 kit.Diff(c, &diff).Grow(1)
 ```
 
-`DiffState` 由调用方持有，布局、展开未改动的行等选项都在它上面设置，见 MyGo 的 [diff viewer 文档](https://github.com/egoist/mygo/blob/main/docs/ui/diff-viewer.md)。
+The caller owns `DiffState` and configures options such as layout and expansion of unchanged lines on it. See MyGo's [diff viewer documentation](https://github.com/egoist/mygo/blob/main/docs/ui/diff-viewer.md).
 
-每帧 `Diff` 会改写 `state.Theme`、`state.Font` 和 `state.LineHeight`（1.5），所以这几项请不要在 `DiffState` 里自己设置。
+Every frame, `Diff` overwrites `state.Theme`, `state.Font`, and `state.LineHeight` (1.5), so do not set these yourself in `DiffState`.
 
 ## API
 
@@ -45,6 +45,6 @@ kit.Diff(c, &diff).Grow(1)
 
 `func Diff(c *ui.Context, state *editor.DiffState) ui.Element`
 
-增行用成功色，删行用危险色，修改用警告色，行号用占位色，字体是主题的等宽字体，背景是编辑区底色。
+Added lines use the success color, removed lines the danger color, changes the warning color, and line numbers the placeholder color. The font is the theme's monospace font, and the background is the editor background.
 
-- **state** `*editor.DiffState`：MyGo 的 diff 状态，由调用方持有。
+- **state** `*editor.DiffState`: MyGo diff state, owned by the caller.

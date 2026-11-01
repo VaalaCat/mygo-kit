@@ -1,11 +1,11 @@
 ---
 title: Patch
-description: 显示已经解析好的补丁片段：增删行着色、可选行号、复制调用方给的原文。
+description: Displays parsed patch fragments with colored additions and deletions, optional line numbers, and copying of caller-supplied source.
 ---
 
 # Patch
 
-显示一段补丁片段，例如工具调用返回的修改。它不比较文件，也不推测行号，显示的就是你给的每一行。要比较两份完整文本，用 [Diff](/components/diff)。
+Displays a patch fragment, such as changes returned by a tool call. It does not compare files or infer line numbers; it displays exactly the lines you supply. Use [Diff](/components/diff) to compare two complete texts.
 
 <Preview page="Patch" :height="260">
 
@@ -13,14 +13,14 @@ description: 显示已经解析好的补丁片段：增删行着色、可选行�
 
 </Preview>
 
-## 用法
+## Usage
 
 ```go
 import kit "github.com/VaalaCat/mygo-kit"
 ```
 
 ```go
-var rows ui.ListState // 由应用持有
+var rows ui.ListState // Held by the application
 
 n := 42
 kit.PatchLines(c, &rows, []kit.PatchLine{
@@ -30,11 +30,11 @@ kit.PatchLines(c, &rows, []kit.PatchLine{
 }, kit.PatchOpt{Source: patchText}).Grow(1)
 ```
 
-调用方负责：
+The caller is responsible for:
 
-- 把补丁解析成一行一行的 `PatchLine`。
-- 行号。`OldLine`、`NewLine` 是 `*int`，传 `nil` 就是空白，组件不会去猜。
-- 复制用的原文。复制按钮复制的是 `PatchOpt.Source`，不会从行片段拼回补丁，所以不会伪造出完整文件。
+- Parsing the patch into individual `PatchLine` values.
+- Providing line numbers. `OldLine` and `NewLine` are `*int`; pass `nil` for a blank. The component does not infer them.
+- Providing the source for copying. The copy button copies `PatchOpt.Source` rather than reconstructing a patch from line fragments, so it does not fabricate a complete file.
 
 ## API
 
@@ -42,27 +42,27 @@ kit.PatchLines(c, &rows, []kit.PatchLine{
 
 `func PatchLines(c *ui.Context, state *ui.ListState, lines []PatchLine, opt PatchOpt) ui.Element`
 
-带圆角细边框的内容框，顶部是标题栏和复制按钮，下面是虚拟列表，可以选中文字，横向可滚动。
+A content box with rounded corners and a thin border. A title bar and copy button sit above a virtualized list with selectable text and horizontal scrolling.
 
-- **state** `*ui.ListState`：列表状态，由调用方持有。
-- **lines** `[]PatchLine`：全部行。
-- **opt** `PatchOpt`：见下。
+- **state** `*ui.ListState`: List state, held by the caller.
+- **lines** `[]PatchLine`: All lines.
+- **opt** `PatchOpt`: See below.
 
 ### PatchLine
 
-- **Kind** `PatchKind`：行的种类。
-- **Text** `string`：行内容，不含 `+`、`-` 前缀，符号由组件按 `Kind` 画。
-- **OldLine**、**NewLine** `*int`：旧文件和新文件的行号。`nil` 显示空白。
+- **Kind** `PatchKind`: The kind of line.
+- **Text** `string`: Line content without a `+` or `-` prefix. The component draws the symbol according to `Kind`.
+- **OldLine**, **NewLine** `*int`: Line numbers in the old and new files. `nil` displays a blank.
 
 ### PatchKind
 
-- **PatchContext**：上下文行，无底色。
-- **PatchAdded**：新增行，`+`，成功色浅底。
-- **PatchDeleted**：删除行，`−`，危险色浅底。
-- **PatchHeader**：块标题，强调色文字，面板底色。
+- **PatchContext**: A context line with no background.
+- **PatchAdded**: An added line with `+` and a light success-colored background.
+- **PatchDeleted**: A deleted line with `−` and a light danger-colored background.
+- **PatchHeader**: A block header with accent-colored text and a panel background.
 
 ### PatchOpt
 
-- **Title** `string`：标题栏文字。默认 `Patch`。
-- **CopyLabel** `string`：复制按钮的提示和可访问名称。默认“复制输出”（英文 Copy output）。
-- **Source** `string`：点击复制时写入剪贴板的完整原文。
+- **Title** `string`: Title bar text. Defaults to `Patch`.
+- **CopyLabel** `string`: The copy button's tooltip and accessible name. Defaults to “Copy output” (localized in Chinese).
+- **Source** `string`: The complete source written to the clipboard when Copy is clicked.

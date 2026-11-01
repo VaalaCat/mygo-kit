@@ -1,15 +1,15 @@
 ---
 title: Facts
-description: 两列事实组：左列标签，右列等宽的值，所有值共用一条左对齐线。
+description: A two-column group of facts, with labels on the left and monospace values sharing one left alignment on the right.
 ---
 
 # Facts
 
-“标签 加 值”的两列列表，适合详情面板里的模型、路径、用量这类信息。标签列固定宽 112，所有值左对齐在同一条线上。值可以选中复制。
+A two-column list of labels and values, suited to information such as models, paths, and usage in a detail panel. The label column has a fixed width of 112, and all values share the same left alignment. Values can be selected and copied.
 
-画廊里没有单独的 Facts 页。
+The gallery has no separate Facts page.
 
-## 用法
+## Usage
 
 ```go
 import kit "github.com/VaalaCat/mygo-kit"
@@ -17,13 +17,13 @@ import kit "github.com/VaalaCat/mygo-kit"
 
 ```go
 kit.Facts(c,
-	kit.Fact{Label: "模型", Value: "claude-sonnet-5-5"},
-	kit.Fact{Label: "目录", Value: "~/code/project"},
-	kit.Fact{Label: "上下文", Value: "42%"},
+	kit.Fact{Label: "Model", Value: "claude-sonnet-5-5"},
+	kit.Fact{Label: "Directory", Value: "~/code/project"},
+	kit.Fact{Label: "Context", Value: "42%"},
 )
 ```
 
-左列是 12/16 次要色的标签，右列是 12/20 的等宽值，两列按首行基线对齐。值太长会换行。
+The left column uses 12/16 labels in the secondary color. The right column uses 12/20 monospace values. Both columns align on the first line's baseline. Long values wrap.
 
 ## API
 
@@ -31,13 +31,13 @@ kit.Facts(c,
 
 `func Facts(c *ui.Context, facts ...Fact) ui.Element`
 
-行与行之间不留间距。
+There is no gap between rows.
 
-- **facts** `...Fact`：按顺序显示的每一行。
+- **facts** `...Fact`: Rows to display in order.
 
 ### Fact
 
 `type Fact struct{ Label, Value string }`
 
-- **Label** `string`：标签，单行。
-- **Value** `string`：值，可选中，等宽字体。
+- **Label** `string`: Single-line label.
+- **Value** `string`: Selectable value in a monospace font.

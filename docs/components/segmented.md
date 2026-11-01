@@ -1,11 +1,11 @@
 ---
 title: Segmented
-description: 分段控件，一排互斥的选项，可带图标和提示。
+description: A row of mutually exclusive options with optional icons and tooltips.
 ---
 
 # Segmented
 
-Zed 的 ToggleButtonGroup 外观：28 高，一圈细边线，各段之间一条竖线。选中的段用强调色浅底和强调色文字。方向键切换，整体是一个 Tab 停靠点。
+Styled like Zed's ToggleButtonGroup: a height of 28, a thin outer border, and a vertical separator between segments. The selected segment uses a light accent background and accent-colored text. Arrow keys switch options, and the whole control is one Tab stop.
 
 <Preview page="Segmented" :height="460">
 
@@ -13,37 +13,37 @@ Zed 的 ToggleButtonGroup 外观：28 高，一圈细边线，各段之间一条
 
 </Preview>
 
-## 用法
+## Usage
 
 ```go
 import kit "github.com/VaalaCat/mygo-kit"
 ```
 
 ```go
-appearance := 0 // 选中段的序号，由应用持有
+appearance := 0 // Index of the selected segment, held by the application
 
-kit.Segmented(c.Key("appearance"), &appearance, []string{"系统", "明", "暗"}).Label("外观").AlignSelf(ui.Start)
+kit.Segmented(c.Key("appearance"), &appearance, []string{"System", "Light", "Dark"}).Label("Appearance").AlignSelf(ui.Start)
 ```
 
-默认宽度贴合内容。放进纵向容器时要加 `AlignSelf(ui.Start)` 才靠左。控件没有可见的标题，请用 `.Label(...)` 给出可访问名称。
+The width fits the content by default. Add `AlignSelf(ui.Start)` when placing it inside a column to align it to the left. The control has no visible title; give it an accessible name with `.Label(...)`.
 
-## 示例
+## Examples
 
-### 带图标和提示
+### Icons and tooltips
 
-用 `SegmentedWith` 和 `SegmentedItem`。`Tooltip` 为空就不显示提示。
+Use `SegmentedWith` and `SegmentedItem`. An empty `Tooltip` displays no tooltip.
 
 ```go
 sections := []kit.SegmentedItem{
-	{Icon: kit.IconFolder, Label: "工作区", Tooltip: "执行器和目录"},
-	{Icon: kit.IconServerCog, Label: "MCP", Tooltip: "已连接的 MCP 服务"},
+	{Icon: kit.IconFolder, Label: "Workspace", Tooltip: "Executors and directories"},
+	{Icon: kit.IconServerCog, Label: "MCP", Tooltip: "Connected MCP servers"},
 }
-kit.SegmentedWith(c.Key("sections"), &current, sections, kit.SegmentedOpt{}).Label("分区")
+kit.SegmentedWith(c.Key("sections"), &current, sections, kit.SegmentedOpt{}).Label("Section")
 ```
 
-### 占满宽度
+### Full width
 
-`FullWidth` 让控件占满容器，各段等宽。
+`FullWidth` fills the container and gives every segment equal width.
 
 ```go
 kit.SegmentedWith(c.Key("full"), &current, sections, kit.SegmentedOpt{FullWidth: true})
@@ -55,10 +55,10 @@ kit.SegmentedWith(c.Key("full"), &current, sections, kit.SegmentedOpt{FullWidth:
 
 `func Segmented(c *ui.Context, selected *int, labels []string) ui.Element`
 
-只有文字的分段控件，宽度贴合内容。等于不带图标和提示的 `SegmentedWith`。
+A text-only segmented control whose width fits its content. Equivalent to `SegmentedWith` without icons or tooltips.
 
-- **selected** `*int`：选中段的序号，由调用方持有。
-- **labels** `[]string`：每段的文字。
+- **selected** `*int`: The index of the selected segment, held by the caller.
+- **labels** `[]string`: The text for each segment.
 
 ### SegmentedWith
 
@@ -66,10 +66,10 @@ kit.SegmentedWith(c.Key("full"), &current, sections, kit.SegmentedOpt{FullWidth:
 
 ### SegmentedItem
 
-- **Icon** `*ui.SVG`：段内图标，12。可以为 `nil`。
-- **Label** `string`：段的文字，同时是可访问名称。
-- **Tooltip** `string`：悬停提示。可以为空。
+- **Icon** `*ui.SVG`: A segment icon sized 12. May be `nil`.
+- **Label** `string`: The segment's text and accessible name.
+- **Tooltip** `string`: Hover tooltip. May be empty.
 
 ### SegmentedOpt
 
-- **FullWidth** `bool`：占满容器宽度，各段等宽。默认 `false`，各段贴合自己的内容。
+- **FullWidth** `bool`: Fills the container width with equal-width segments. Defaults to `false`, so each segment fits its own content.

@@ -1,11 +1,11 @@
 ---
 title: TitleBar
-description: 窗口顶栏，可以拖动窗口，并自动避开系统窗口按钮。
+description: A draggable window title bar that automatically leaves room for system window buttons.
 ---
 
 # TitleBar
 
-窗口顶栏。整条可以拖动窗口，左右边距会按系统窗口按钮（macOS 红绿灯、Windows 按钮）占用的位置留出。
+A window title bar. The whole bar can be used to drag the window. Left and right margins account for the space occupied by system window buttons (macOS traffic lights and Windows buttons).
 
 <Preview page="TitleBar" :height="260">
 
@@ -13,7 +13,7 @@ description: 窗口顶栏，可以拖动窗口，并自动避开系统窗口按�
 
 </Preview>
 
-## 用法
+## Usage
 
 ```go
 import kit "github.com/VaalaCat/mygo-kit"
@@ -21,16 +21,16 @@ import kit "github.com/VaalaCat/mygo-kit"
 
 ```go
 kit.TitleBar(c, func() {
-	kit.IconButton(c.Key("folder"), kit.IconFolder, "工作区")
+	kit.IconButton(c.Key("folder"), kit.IconFolder, "Workspace")
 	ui.Text(c, "~/code/project")
 })
 ```
 
-要让系统标题栏让位、由 `TitleBar` 接管，创建窗口时设置 `mygo.WindowOptions{TitleBarStyle: mygo.TitleBarHidden}`。这时窗口按钮浮在内容上方，`TitleBar` 按 `c.TitleBar()` 给出的占位尺寸留出左右边距。窗口保持系统标题栏时，`c.TitleBar()` 为 0，`TitleBar` 按默认的 12 留边。
+To replace the system title bar with `TitleBar`, set `mygo.WindowOptions{TitleBarStyle: mygo.TitleBarHidden}` when creating the window. The window buttons then float above the content, and `TitleBar` leaves left and right margins based on the reserved space reported by `c.TitleBar()`. When the window keeps the system title bar, `c.TitleBar()` is 0 and `TitleBar` uses the default margin of 12.
 
-## 和别的组件配合
+## Working with other components
 
-`TitleBar` 把自己的高度记在窗口上。同一个窗口里的 [Sheet](/components/sheet) 和 [ToastHost](/components/toast) 会据此从顶栏下缘开始，不盖住顶栏和系统按钮。高度按本帧或上一帧记录，所以调用先后只影响第一帧。[Workspace](/components/workspace) 已经替你做好了。
+`TitleBar` records its height on the window. [Sheet](/components/sheet) and [ToastHost](/components/toast) in the same window use it to start below the title bar, leaving it and the system buttons uncovered. The height comes from the current or previous frame, so call order only affects the first frame. [Workspace](/components/workspace) handles this for you.
 
 ## API
 
@@ -38,6 +38,6 @@ kit.TitleBar(c, func() {
 
 `func TitleBar(c *ui.Context, content func()) ui.Element`
 
-高度取系统标题栏高度和 36 的较大值。背景是 `Colors.Background`，底部一条分隔线，子元素间距 8。
+The height is the greater of the system title bar height and 36. The background is `Colors.Background`, with a bottom separator and a gap of 8 between children.
 
-- **content** `func()`：绘制顶栏内容的函数。
+- **content** `func()`: A function that draws the title bar content.

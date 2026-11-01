@@ -1,11 +1,11 @@
 ---
 title: Terminal
-description: 终端视图：显示 PTY 的输出，把键盘输入回传给应用，支持颜色、历史、选择和鼠标上报。
+description: A terminal view that displays PTY output and sends keyboard input back to the application, with colors, scrollback, selection, and mouse reporting.
 ---
 
 # Terminal
 
-一个完整的终端视图。它只负责显示和输入：你的应用把 PTY（或任何进程）的输出写进 `TerminalState`，通过 `OnInput` 收到用户的按键，再写回 PTY。启动进程、PTY 和重连都由你的应用负责。
+A complete terminal view. It handles display and input: your application writes output from a PTY (or any process) into `TerminalState`, receives user keystrokes through `OnInput`, and writes them back to the PTY. Your application manages process startup, the PTY, and reconnection.
 
 <Preview page="Terminal" :height="520">
 
@@ -13,17 +13,17 @@ description: 终端视图：显示 PTY 的输出，把键盘输入回传给应�
 
 </Preview>
 
-## 用法
+## Usage
 
 ```go
 import kit "github.com/VaalaCat/mygo-kit"
 ```
 
 ```go
-// 创建一次，状态由应用持有；不再使用时调用 state.Close()
+// Create once and keep the state in the application; call state.Close() when no longer needed
 state := kit.NewTerminalState(24, 80)
 
-// 把 PTY 的输出写进来，可以在任意 goroutine 调用
+// Write PTY output here; callable from any goroutine
 go func() {
 	buf := make([]byte, 4096)
 	for {
@@ -37,31 +37,31 @@ go func() {
 ```
 
 ```go
-// 每帧
+// Every frame
 kit.Terminal(c, state, kit.TerminalOpt{
 	OnInput:  func(data []byte) { pty.Write(data) },
 	OnResize: func(rows, cols int) { resizePTY(rows, cols) },
 })
 ```
 
-`TerminalState.Write` 没有返回值，不是 `io.Writer`，所以不能直接用 `io.Copy`，像上面这样循环读写。行列数由面板尺寸换算，变化时调用 `OnResize`，调用方要把新尺寸同步给 PTY。
+`TerminalState.Write` has no return value and does not implement `io.Writer`, so you cannot use `io.Copy` directly. Read and write in a loop as shown above. Row and column counts are calculated from the panel dimensions. When they change, `OnResize` is called, and the caller must apply the new size to the PTY.
 
-## 能显示什么
+## Display features
 
-- 等宽 12/16（Lilex）。16 色用主题里的 `Colors.ANSI`，另外支持 256 色和真彩色。
-- 粗体、斜体、下划线、反显、淡色、删除线，光标、滚动历史。
-- 选择复制：双击选词，三击选行。macOS 上 Cmd+C / Cmd+V，其他系统是 Ctrl+Shift+C / Ctrl+Shift+V，普通的 Ctrl+C 仍然发给程序当中断。
+- Monospaced 12/16 text (Lilex). The 16-color palette uses the theme's `Colors.ANSI`. 256 colors and true color are also supported.
+- Bold, italic, underline, reverse video, dim text, strikethrough, a cursor, and scrollback.
+- Selection and clipboard: double-click to select a word, triple-click to select a line. Use Cmd+C / Cmd+V on macOS and Ctrl+Shift+C / Ctrl+Shift+V on other systems. Plain Ctrl+C is still sent to the program as an interrupt.
 
-## 鼠标上报
+## Mouse reporting
 
-程序开启鼠标上报（DEC 模式 9、1000 到 1003，SGR 编码）后，点击、拖动、移动和滚轮都交给程序。按住 Shift 仍然可以本地选择文字、回看历史。Shift+PageUp / PageDown 翻看历史，不发给程序。
+When the program enables mouse reporting (DEC modes 9 and 1000 through 1003, with SGR encoding), clicks, drags, pointer movements, and scrolling are sent to the program. Hold Shift to select text locally or browse scrollback. Shift+PageUp / PageDown navigates scrollback without being sent to the program.
 
-## 要注意
+## Notes
 
-- 元素默认填满父容器剩余空间，背景是编辑器色，点击获得焦点，焦点只体现在光标上。
-- `OnInput` 的数据包括键盘、输入法上屏的文字和粘贴编码后的字节。程序查询光标位置等自动应答也会从这里发出，那时是在后台 goroutine 调用的，写 PTY 要能接受这种调用。
-- `NewTerminalState` 会启动一个转发模拟器自动应答的 goroutine，所以不再使用时一定要调用 `Close`。关闭后的 `Write` 被忽略。
-- `Write` 在回看历史时不会把视图拉回底部。
+- By default, the element fills the remaining space in its parent, uses the editor background color, and receives focus on click. Only the cursor indicates focus.
+- `OnInput` receives keyboard input, committed IME text, and encoded paste bytes. Automatic responses to program queries, such as cursor position queries, also go through this callback. Those calls happen on a background goroutine, so writing to the PTY must support calls from that goroutine.
+- `NewTerminalState` starts a goroutine that forwards the emulator's automatic responses. Always call `Close` when the state is no longer needed. Calls to `Write` after closure are ignored.
+- `Write` does not scroll the view back to the bottom while browsing scrollback.
 
 ## API
 
@@ -69,25 +69,25 @@ kit.Terminal(c, state, kit.TerminalOpt{
 
 `func NewTerminalState(rows, cols int) *TerminalState`
 
-创建 `rows` 行 `cols` 列的空终端。
+Creates an empty terminal with `rows` rows and `cols` columns.
 
 ### TerminalState
 
-由应用持有，可以在任意 goroutine 里调用 `Write`。
+Held by the application. `Write` can be called from any goroutine.
 
-- **Write(data []byte)**：喂入 PTY 输出。
-- **Close()**：结束转发自动应答的 goroutine，之后的 `Write` 被忽略。
-- **Size() (rows, cols int)**：当前行数和列数。
-- **Text() string**：当前屏幕的纯文本，每行去掉行尾空格，末尾空行去掉。
-- **Title() string**：程序通过 OSC 设置的窗口标题。
+- **Write(data []byte)**: Feeds in PTY output.
+- **Close()**: Stops the goroutine forwarding automatic responses. Subsequent `Write` calls are ignored.
+- **Size() (rows, cols int)**: The current row and column counts.
+- **Text() string**: Plain text from the current screen, with trailing spaces removed from each line and trailing blank lines removed.
+- **Title() string**: The window title set by the program through OSC.
 
 ### Terminal
 
 `func Terminal(c *ui.Context, state *TerminalState, opt TerminalOpt) ui.Element`
 
-屏幕文字同时作为元素的无障碍值，读屏和自动化测试都能读到当前内容。
+The screen text is also the element's accessible value, so screen readers and automated tests can read its current content.
 
 ### TerminalOpt
 
-- **OnInput** `func(data []byte)`：接收键盘、输入法上屏文字和粘贴编码后的字节，写给 PTY。可能在后台 goroutine 里调用。
-- **OnResize** `func(rows, cols int)`：面板尺寸换算出的行列数变化时调用。
+- **OnInput** `func(data []byte)`: Receives keyboard input, committed IME text, and encoded paste bytes to write to the PTY. May be called from a background goroutine.
+- **OnResize** `func(rows, cols int)`: Called when the row and column counts calculated from the panel dimensions change.

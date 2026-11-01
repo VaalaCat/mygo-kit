@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -12,15 +12,19 @@
     </style>
   </head>
   <body>
-    <p class="loading">正在加载预览…</p>
+    <p class="loading">Loading the preview…</p>
     <!--
       ?page=Button        文档页里的单页预览，只画这一页
       ?page=Button&full   完整画廊，从这一页开始
       ?theme=dark|light   单独打开时指定配色；在文档页的 iframe 里跟随文档站的暗色开关
+      ?lang=en|zh-Hans    画廊和 kit 自带文案的语言，默认 en
     -->
     <script>
       const params = new URLSearchParams(location.search)
+      const lang = params.get("lang") === "zh-Hans" ? "zh-Hans" : "en"
       const root = document.documentElement
+      root.lang = lang
+      if (lang === "zh-Hans") document.querySelector(".loading").textContent = "正在加载预览…"
       if (params.get("theme")) root.dataset.mygoTheme = params.get("theme")
       try {
         const docs = parent !== window && parent.document.documentElement
@@ -34,7 +38,7 @@
     <script src="wasm_exec.js"></script>
     <script>
       const go = new Go()
-      go.argv = ["gallery", "-page", params.get("page") || "Overview"]
+      go.argv = ["gallery", "-page", params.get("page") || "Overview", "-lang", lang]
       if (!params.has("full")) go.argv.push("-embed")
       WebAssembly.instantiateStreaming(fetch("gallery.wasm"), go.importObject)
         .then((r) => {
@@ -44,7 +48,7 @@
         .catch((e) => {
           const p = document.createElement("p")
           p.className = "error"
-          p.textContent = "预览加载失败：" + e
+          p.textContent = (lang === "zh-Hans" ? "预览加载失败：" : "The preview failed to load: ") + e
           document.body.replaceChildren(p)
         })
     </script>

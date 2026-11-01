@@ -1,11 +1,11 @@
 ---
 title: Sheet
-description: 贴靠窗口左侧或右侧的模态抽屉，点遮罩或按 Esc 关闭。
+description: A modal drawer attached to the left or right edge of the window, dismissed by clicking the backdrop or pressing Esc.
 ---
 
 # Sheet
 
-从窗口左边或右边滑出来的模态抽屉，带半透明遮罩。点遮罩或按 Esc 会把 `*open` 置为 false。
+A modal drawer that slides in from the left or right edge of the window, with a translucent backdrop. Clicking the backdrop or pressing Esc sets `*open` to false.
 
 <Preview page="Sheet" :height="360">
 
@@ -13,29 +13,29 @@ description: 贴靠窗口左侧或右侧的模态抽屉，点遮罩或按 Esc �
 
 </Preview>
 
-## 用法
+## Usage
 
 ```go
 import kit "github.com/VaalaCat/mygo-kit"
 ```
 
 ```go
-var open bool // 由应用持有
+var open bool // Held by the application
 
-if kit.Button(c, "打开详情").Clicked() {
+if kit.Button(c, "Open details").Clicked() {
 	open = true
 }
 kit.Sheet(c.Key("details"), &open, kit.SheetRight, 360, func() {
-	kit.Header(c, "详情", nil)
-	ui.Text(c, "抽屉里的内容").Padding(12)
+	kit.Header(c, "Details", nil)
+	ui.Text(c, "Drawer content").Padding(12)
 })
 ```
 
-抽屉每帧都要调用，`open` 为 false 时不画。
+Call the drawer every frame. It draws nothing when `open` is false.
 
-## 和 TitleBar 的关系
+## Working with TitleBar
 
-窗口里用了 [TitleBar](/components/title-bar) 时，抽屉和遮罩从顶栏下缘开始，顶栏和系统窗口按钮不会被盖住。没有 TitleBar 时铺满整个窗口。`TitleBar` 的高度按本帧或上一帧记录，调用顺序只影响第一帧。
+When the window uses a [TitleBar](/components/title-bar), the drawer and backdrop start below it, leaving the title bar and system window buttons uncovered. Without a TitleBar, they fill the entire window. The `TitleBar` height is recorded in the current or previous frame, so call order only affects the first frame.
 
 ## API
 
@@ -43,14 +43,14 @@ kit.Sheet(c.Key("details"), &open, kit.SheetRight, 360, func() {
 
 `func Sheet(c *ui.Context, open *bool, side SheetSide, width float32, content func()) ui.Element`
 
-抽屉用面板底色，只在靠近内容的一侧画一条分隔线，最宽占窗口 90%。
+The drawer uses the panel background, with a separator only on the edge facing the content. Its maximum width is 90% of the window.
 
-- **open** `*bool`：是否打开，由调用方持有。
-- **side** `SheetSide`：贴靠的边。
-- **width** `float32`：抽屉宽度。
-- **content** `func()`：绘制抽屉内容的函数。
+- **open** `*bool`: Whether the drawer is open, held by the caller.
+- **side** `SheetSide`: The edge the drawer attaches to.
+- **width** `float32`: The drawer width.
+- **content** `func()`: A function that draws the drawer content.
 
 ### SheetSide
 
-- **SheetLeft**：贴靠窗口左侧。
-- **SheetRight**：贴靠窗口右侧。
+- **SheetLeft**: Attaches to the left edge of the window.
+- **SheetRight**: Attaches to the right edge of the window.

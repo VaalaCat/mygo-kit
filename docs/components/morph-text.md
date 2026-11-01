@@ -1,11 +1,11 @@
 ---
 title: MorphText
-description: 单行状态文字，文字变化时只有变了的字素短暂上推并渐显。
+description: Single-line status text where only changed graphemes briefly move upward and fade in.
 ---
 
 # MorphText
 
-显示一行会变化的状态文字，例如“正在读取文件”变成“正在运行测试”。文字变化时，只有变了的字素向上轻推并淡入；没变的前缀、后缀和中间能对上的字素保持原样。
+Displays a line of changing status text, such as “Reading files” changing to “Running tests”. Only changed graphemes move slightly upward and fade in; matching graphemes in the prefix, suffix, and middle stay as they are.
 
 <Preview page="MorphText" :height="200">
 
@@ -13,23 +13,23 @@ description: 单行状态文字，文字变化时只有变了的字素短暂上�
 
 </Preview>
 
-## 用法
+## Usage
 
 ```go
 import kit "github.com/VaalaCat/mygo-kit"
 ```
 
 ```go
-kit.MorphText(c, status) // status 是应用里当前的状态文字
+kit.MorphText(c, status) // status is the application's current status text
 ```
 
-## 行为
+## Behavior
 
-- 按 Unicode 字素处理，完整的 emoji 和带组合重音的字符不会被拆开。
-- 共同的前缀和后缀保持不动。纯追加（后面多出新字符）不播放动画，稳定的前后缀也不会重播。
-- 变化的中段最多比较一定数量的字素，变化太大时直接显示新文字，不做动画。
-- 系统或主题要求减少动画时，直接显示新文字。
-- 文字单行不换行。整段的可访问名称就是当前文字。
+- Works with Unicode graphemes, so complete emoji and characters with combining accents are not split apart.
+- Common prefixes and suffixes stay still. Appending characters does not animate, and unchanged prefixes and suffixes do not replay their animations.
+- Compares only a limited number of graphemes in the changed middle section. If the change is too large, the new text appears without animation.
+- Shows the new text directly when the system or theme requests reduced motion.
+- Text stays on one line without wrapping. The accessible name for the entire element is the current text.
 
 ## API
 
@@ -37,4 +37,4 @@ kit.MorphText(c, status) // status 是应用里当前的状态文字
 
 `func MorphText(c *ui.Context, value string) ui.Element`
 
-- **value** `string`：当前要显示的文字。每帧传入；组件按上一次的文字算出变化。动画时长取 `Theme.Motion.Fade`（默认 120ms）。
+- **value** `string`: The current text to display, passed in each frame. The component compares it with the previous text to find changes. Animation duration comes from `Theme.Motion.Fade` (120ms by default).

@@ -1,11 +1,11 @@
 ---
 title: Disclosure
-description: 无边框的整行折叠标题，展开时内容带高度过渡。
+description: A borderless, full-row collapsible header with a height transition when its content expands.
 ---
 
 # Disclosure
 
-一整行可点击的标题，左边是箭头，点击展开或收起下面的内容。键盘和展开语义沿用 MyGo 的折叠组件。
+A full-row clickable header with an arrow on the left. Click to expand or collapse the content below. Keyboard behavior and expansion semantics come from MyGo's collapsible component.
 
 <Preview page="Disclosure" :height="220">
 
@@ -13,21 +13,21 @@ description: 无边框的整行折叠标题，展开时内容带高度过渡。
 
 </Preview>
 
-## 用法
+## Usage
 
 ```go
 import kit "github.com/VaalaCat/mygo-kit"
 ```
 
 ```go
-open := true // 展开状态由应用持有
+open := true // The application owns the expanded state
 
-kit.Disclosure(c, "更多设置", &open, func() {
-	ui.Text(c, "展开后显示的内容")
+kit.Disclosure(c, "More settings", &open, func() {
+	ui.Text(c, "Content shown when expanded")
 })
 ```
 
-内容区缩进到标题文字的位置。展开用 200ms、收起用 150ms 的高度过渡；系统或主题要求减少动画时没有过渡。收起中的内容立即禁用，不会再响应点击。
+The content area is indented to align with the title text. Height transitions take 200ms to expand and 150ms to collapse. There is no transition when the system or theme requests reduced motion. Content is disabled as soon as collapsing begins and no longer responds to clicks.
 
 ## API
 
@@ -35,8 +35,8 @@ kit.Disclosure(c, "更多设置", &open, func() {
 
 `func Disclosure(c *ui.Context, label string, open *bool, content func()) ui.Element`
 
-返回标题行元素，可以继续链式设置，例如 `.Disabled(true)`。
+Returns the header row element for further chained settings, such as `.Disabled(true)`.
 
-- **label** `string`：标题文字，同时是可访问名称。
-- **open** `*bool`：是否展开，由调用方持有。
-- **content** `func()`：展开后绘制内容的函数。完全收起后不会调用。
+- **label** `string`: Header text, also used as the accessible name.
+- **open** `*bool`: Whether the content is expanded, owned by the caller.
+- **content** `func()`: Function that draws the content when expanded. Not called once fully collapsed.

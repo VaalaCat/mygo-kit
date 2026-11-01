@@ -1,11 +1,11 @@
 ---
 title: Kbd
-description: 显示快捷键的小标签，只管外观，不注册快捷键。
+description: A small keyboard shortcut label that controls appearance without registering shortcuts.
 ---
 
 # Kbd
 
-一枚显示快捷键的小标签，例如 `⌘K`。它只是外观，真正的快捷键要你自己用 MyGo 注册。
+A small label that displays a keyboard shortcut, such as `⌘K`. It handles appearance only; register the actual shortcut with MyGo yourself.
 
 <Preview page="Kbd" :height="180">
 
@@ -13,7 +13,7 @@ description: 显示快捷键的小标签，只管外观，不注册快捷键。
 
 </Preview>
 
-## 用法
+## Usage
 
 ```go
 import kit "github.com/VaalaCat/mygo-kit"
@@ -21,12 +21,12 @@ import kit "github.com/VaalaCat/mygo-kit"
 
 ```go
 ui.Row(c).Gap(8).AlignItems(ui.Center).Children(func() {
-	ui.Text(c, "打开命令面板")
+	ui.Text(c, "Open command palette")
 	kit.Kbd(c, "⌘K")
 })
 ```
 
-[CommandPalette](/components/command-palette) 的 `Command.Keys` 也用 Kbd 显示快捷键。[Menu](/components/menu) 的 `MenuItem.Shortcut` 只是右侧的次要色文字，没有边框和底色。
+[CommandPalette](/components/command-palette) also uses Kbd to display `Command.Keys` shortcuts. A [Menu](/components/menu) item's `MenuItem.Shortcut` is secondary-colored text on the right, without a border or background.
 
 ## API
 
@@ -34,6 +34,6 @@ ui.Row(c).Gap(8).AlignItems(ui.Center).Children(func() {
 
 `func Kbd(c *ui.Context, keys string) ui.Element`
 
-20 高的小标签，圆角 4，比所在面板略深的底色加细边线，文字 12/16 次要色。
+A small label with a height of 20, a corner radius of 4, a background slightly darker than its panel, and a thin border. Text uses 12/16 sizing and the secondary color.
 
-- **keys** `string`：要显示的文字，例如 `"⌘N"`、`"Ctrl+N"`。组件不解析它。
+- **keys** `string`: The text to display, such as `"⌘N"` or `"Ctrl+N"`. The component does not parse it.

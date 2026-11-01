@@ -1,30 +1,32 @@
 # mygo-kit
 
-基于 [MyGo](https://github.com/egoist/mygo) 的原生 Go 组件库，样式参照 Zed：连续面板、紧凑的工具栏、小圆角控件，以及 One Light / One Dark 配色。组件直接返回 MyGo 的 `ui.Element`，不另起应用运行时，也不联网；除终端外不启动后台 goroutine。
+English | [简体中文](README.zh-CN.md)
+
+A native Go component library built on [MyGo](https://github.com/egoist/mygo), styled after Zed: continuous panels, compact toolbars, controls with small corner radii, and One Light / One Dark color schemes. Components return MyGo’s `ui.Element` directly. They do not create a separate application runtime or access the network. Only the terminal starts background goroutines.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="website/public/screenshots/settings-dark.png">
-  <img alt="mygo-kit 设置页示例" src="website/public/screenshots/settings-light.png">
+  <img alt="mygo-kit settings page example" src="website/public/screenshots/settings-light.png">
 </picture>
 
-**[文档](https://vaalacat.github.io/mygo-kit/)** · **[在线画廊](https://vaalacat.github.io/mygo-kit/preview/?page=Overview&full)**（浏览器里运行的 WebAssembly 版本）
+**[Documentation](https://vaalacat.github.io/mygo-kit/)** · **[Live gallery](https://vaalacat.github.io/mygo-kit/preview/?page=Overview&full)** (WebAssembly version running in the browser)
 
-## 包含什么
+## Components
 
-- 控件：按钮、输入框、Select、开关、分段控件、页签、菜单、补全浮层、对话框、Toast、命令面板。
-- 表单：字段、设置页、设置分组和设置行。
-- 阅读：流式 Markdown、JSON 树、ANSI 输出、diff、补丁片段、图片，以及基于 vt 的终端。
-- 布局：带左右下三个 Dock 的工作区、标题栏、状态栏、分栏、虚拟列表和树。
+- Controls: buttons, inputs, Select, switches, segmented controls, tabs, menus, completion overlays, dialogs, Toast, and a command palette.
+- Forms: fields, settings pages, settings sections, and settings rows.
+- Reading: streaming Markdown, JSON trees, ANSI output, diffs, patch snippets, images, and a vt-based terminal.
+- Layout: a workspace with left, right, and bottom docks, title bars, status bars, split panes, virtual lists, and trees.
 
-## 安装
+## Installation
 
 ```sh
 go get github.com/VaalaCat/mygo-kit
 ```
 
-需要 Go 1.27.3 和 MyGo v0.7.3。Linux 需要 GTK3，macOS 使用系统框架。
+Requires Go 1.27.3 and MyGo v0.7.3. Linux requires GTK3. macOS uses system frameworks.
 
-## 快速开始
+## Quick start
 
 ```go
 package main
@@ -58,8 +60,8 @@ func view(c *ui.Context) {
 	ui.Column(c).Fill().Children(func() {
 		kit.Header(c, "Hello", nil)
 		ui.Column(c).Padding(theme.Space(4)).Gap(theme.Space(2)).Children(func() {
-			ui.Text(c, "点击次数："+strconv.Itoa(count))
-			if kit.PrimaryButton(c, "点我").Clicked() {
+			ui.Text(c, "Clicks: "+strconv.Itoa(count))
+			if kit.PrimaryButton(c, "Click me").Clicked() {
 				count++
 			}
 		})
@@ -67,15 +69,15 @@ func view(c *ui.Context) {
 }
 ```
 
-主题由应用持有，每帧调用一次 `ApplyTheme`。主题定制、暗色模式和每个组件的用法见[文档](https://vaalacat.github.io/mygo-kit/)。
+Your application owns the theme and calls `ApplyTheme` once per frame. See the [documentation](https://vaalacat.github.io/mygo-kit/) for theme customization, dark mode, and component usage.
 
-## 本地运行
+## Run locally
 
 ```sh
-go run ./cmd/gallery                 # 组件画廊
-cd website && bun install && bun run dev   # 文档站，含在线预览
+go run ./cmd/gallery                 # Component gallery
+cd website && bun install && bun run dev   # Docs site with live previews
 ```
 
-## 许可
+## License
 
-[MIT](LICENSE)。第三方来源与许可见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
+[MIT](LICENSE). See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for third-party sources and licenses.

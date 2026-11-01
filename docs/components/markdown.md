@@ -1,11 +1,11 @@
 ---
 title: Markdown
-description: 可选择、可流式追加的 Markdown 阅读视图，带可复制的代码块、表格、任务列表和图片。
+description: A selectable Markdown reader with streaming updates, copyable code blocks, tables, task lists, and images.
 ---
 
 # Markdown
 
-阅读 Markdown 的原生视图：标题、列表、表格、引用、脚注、行内代码、带语法颜色的代码块。可以跨段落拖选，支持流式追加（模型一边输出一边显示）。
+A native view for reading Markdown: headings, lists, tables, blockquotes, footnotes, inline code, and syntax-highlighted code blocks. Supports selection across paragraphs and streaming updates as the model produces output.
 
 <Preview page="Markdown" :height="520">
 
@@ -13,7 +13,7 @@ description: 可选择、可流式追加的 Markdown 阅读视图，带可复制
 
 </Preview>
 
-## 用法
+## Usage
 
 ```go
 import kit "github.com/VaalaCat/mygo-kit"
@@ -23,29 +23,29 @@ import kit "github.com/VaalaCat/mygo-kit"
 kit.Markdown(c, source, kit.MarkdownOpt{})
 ```
 
-`source` 是完整的 Markdown 原文，每帧传入。放进 `ui.Scroll` 里就能滚动。
+`source` is the complete Markdown source, passed in each frame. Place it inside `ui.Scroll` to make it scrollable.
 
-## 示例
+## Examples
 
-### 流式输出
+### Streaming output
 
-模型还在输出时设 `Streaming`，每帧传入当前累积的全文。没收尾的代码块，复制按钮是禁用的。
+Set `Streaming` while the model is still producing output, and pass the full text accumulated so far each frame. The copy button is disabled for an unfinished code block.
 
 ```go
 kit.Markdown(c, reply.Text, kit.MarkdownOpt{Streaming: reply.IsRunning})
 ```
 
-### 链接
+### Links
 
-默认点击链接会让 MyGo 用系统打开，只会打开安全的网址，不会执行任意协议。想自己处理就设 `OnLink`，设了之后所有链接都交给它。
+By default, clicking a link asks MyGo to open it through the system. Only safe web URLs are opened; arbitrary protocols are not executed. Set `OnLink` to handle links yourself. Once set, it receives all links.
 
 ```go
 kit.MarkdownOpt{OnLink: func(url string) { openInBrowser(url) }}
 ```
 
-### 图片
+### Images
 
-Markdown 里的图片单独成块显示。本库不读文件、不下载，图片数据由你按地址给出：`Image` 收到图片地址，返回准备好的 `ImageResource`。
+Markdown images appear as separate blocks. The library does not read files or download images. Supply image data by URL: `Image` receives the image URL and returns a prepared `ImageResource`.
 
 ```go
 kit.MarkdownOpt{
@@ -53,21 +53,21 @@ kit.MarkdownOpt{
 		if img, ok := cache[url]; ok {
 			return kit.ImageResource{Source: img}
 		}
-		return kit.ImageResource{Loading: true} // 应用自己去下载，下载完放进 cache
+		return kit.ImageResource{Loading: true} // The application downloads the image and adds it to cache
 	},
 	OnImage: func(url string) { openPreview(url) },
 }
 ```
 
-没设 `Image` 时只显示替代文字。设了 `OnImage`，点击图片会调用它，例如打开 [ImagePreview](/components/image)。
+Without `Image`, only the alternative text is shown. If `OnImage` is set, clicking an image calls it, for example to open an [ImagePreview](/components/image).
 
-### 任务列表
+### Task lists
 
-`- [x]` 和 `- [ ]` 显示成只读的任务框，它是文档的状态，不能点击切换。
+`- [x]` and `- [ ]` appear as read-only checkboxes. They represent the document's state and cannot be toggled by clicking.
 
-### 选区和复制
+### Selection and copying
 
-默认情况下，Markdown 自己就是一个可选择的容器：选中的文字复制为纯文本，右键菜单的“复制 Markdown”复制整份源文。想让它和外面的内容连成一个选区，就设 `ShareSelection`，由外层的 `Selectable` 容器接管选择和右键菜单。
+By default, Markdown is its own selectable container. Selected text is copied as plain text, while “Copy Markdown” in the context menu copies the entire source. To share a selection with surrounding content, set `ShareSelection` and let the outer `Selectable` container handle selection and the context menu.
 
 ```go
 ui.Column(c).Selectable().Children(func() {
@@ -76,9 +76,9 @@ ui.Column(c).Selectable().Children(func() {
 })
 ```
 
-### 公式和图表
+### Formulas and diagrams
 
-数学式显示成 TeX 源码，本库不自带公式排版器，也不渲染 Mermaid。
+Math is displayed as TeX source. The library does not include a math typesetter or render Mermaid.
 
 ## API
 
@@ -86,17 +86,17 @@ ui.Column(c).Selectable().Children(func() {
 
 `func Markdown(c *ui.Context, source string, opt MarkdownOpt) ui.Element`
 
-正文用 14/24，代码用 12/20，块间距 8。代码块带语言标题栏和复制按钮。
+Body text uses 14/24 sizing, code uses 12/20, and block spacing is 8. Code blocks include a language header and copy button.
 
-- **source** `string`：Markdown 原文。
-- **opt** `MarkdownOpt`：见下。
+- **source** `string`: Markdown source.
+- **opt** `MarkdownOpt`: See below.
 
 ### MarkdownOpt
 
-- **Streaming** `bool`：流式显示。默认 `false`。
-- **ShareSelection** `bool`：不自己建立选区和右键菜单，交给外层可选择的容器。默认 `false`。
-- **OnLink** `func(string)`：点击链接时调用，参数是链接地址。设了之后不再由系统打开。
-- **Image** `func(string) ImageResource`：按图片地址返回图片资源。
-- **OnImage** `func(string)`：点击图片时调用，参数是图片地址。
-- **CopyLabel** `string`：右键菜单里复制整份源文那一项的名称。默认“复制 Markdown”（英文 Copy Markdown）。
-- **CodeCopyLabel** `string`：代码块复制按钮的提示和可访问名称。默认“复制代码”（英文 Copy code）。
+- **Streaming** `bool`: Displays streaming output. Defaults to `false`.
+- **ShareSelection** `bool`: Leaves selection and the context menu to an outer selectable container instead of creating its own. Defaults to `false`.
+- **OnLink** `func(string)`: Called when a link is clicked, with its URL as the argument. When set, the system no longer opens links.
+- **Image** `func(string) ImageResource`: Returns an image resource for an image URL.
+- **OnImage** `func(string)`: Called when an image is clicked, with its URL as the argument.
+- **CopyLabel** `string`: The context menu label for copying the entire source. Defaults to “Copy Markdown” (localized in Chinese).
+- **CodeCopyLabel** `string`: The code block copy button's tooltip and accessible name. Defaults to “Copy code” (localized in Chinese).

@@ -1,33 +1,33 @@
 ---
 title: Popover
-description: 挂在锚点元素旁的浮层，复用 MyGo 的定位、关闭和焦点处理。
+description: A floating panel beside an anchor element that reuses MyGo's positioning, dismissal, and focus handling.
 ---
 
 # Popover
 
-挂在某个元素旁边的小浮层。位置、点外面关闭、Esc 关闭、焦点都由 MyGo 处理，组件只加外观：圆角 8、浮层底色、细边框。
+A small floating panel beside an element. MyGo handles positioning, dismissal on outside clicks or Esc, and focus. The component adds styling: a corner radius of 8, a floating-panel background, and a thin border.
 
-画廊里没有单独的 Popover 页，它和 Tooltip 的示例放在 Dialog 页的最下面。
+There is no separate Popover page in the gallery. Its example appears with Tooltip at the bottom of the Dialog page.
 
-## 用法
+## Usage
 
 ```go
 import kit "github.com/VaalaCat/mygo-kit"
 ```
 
 ```go
-var open bool // 由应用持有
+var open bool // Held by the application
 
-anchor := kit.Button(c.Key("popover"), "更多信息")
+anchor := kit.Button(c.Key("popover"), "More information")
 if anchor.Clicked() {
 	open = !open
 }
 kit.Popover(c, anchor, &open, func() {
-	ui.Text(c, "浮层里的内容")
+	ui.Text(c, "Content inside the popover")
 })
 ```
 
-锚点和浮层都要每帧调用。点击锚点怎么开关由你决定，像上面这样取反即可；点浮层外面或按 Esc 时，MyGo 会把 `*open` 置为 false。
+Call both the anchor and the popover every frame. You decide how clicking the anchor toggles it; inverting the value as above is enough. Clicking outside the popover or pressing Esc makes MyGo set `*open` to false.
 
 ## API
 
@@ -35,10 +35,10 @@ kit.Popover(c, anchor, &open, func() {
 
 `func Popover(c *ui.Context, anchor ui.Element, open *bool, content func()) ui.Element`
 
-浮层出现在锚点下方，与锚点相距 4，内边距 8，子元素间距 8。
+The popover appears below the anchor with a gap of 4, padding of 8, and child spacing of 8.
 
-- **anchor** `ui.Element`：浮层依附的元素。
-- **open** `*bool`：是否打开，由调用方持有。
-- **content** `func()`：绘制浮层内容的函数。
+- **anchor** `ui.Element`: The element the popover is attached to.
+- **open** `*bool`: Whether it is open, held by the caller.
+- **content** `func()`: Draws the popover's content.
 
-返回浮层元素，可以链式调用 `.Dismissed()` 判断本帧是否被关闭。
+Returns the popover element. Chain `.Dismissed()` to check whether it was dismissed in the current frame.

@@ -1,11 +1,11 @@
 ---
 title: Badge
-description: 紧凑的状态徽标 Badge，和表示连接状态、未读的小圆点 StatusDot。
+description: A compact status Badge and a small StatusDot for connection status or unread items.
 ---
 
 # Badge
 
-`Badge` 是一枚带语义颜色的小标签；`StatusDot` 是 8 见方的圆点，用来表示连接状态或未读。
+`Badge` is a small label with a semantic color. `StatusDot` is an 8×8 dot for connection status or unread items.
 
 <Preview page="Badge" :height="240">
 
@@ -13,28 +13,28 @@ description: 紧凑的状态徽标 Badge，和表示连接状态、未读的小�
 
 </Preview>
 
-## 用法
+## Usage
 
 ```go
 import kit "github.com/VaalaCat/mygo-kit"
 ```
 
 ```go
-kit.Badge(c, "本地", kit.BadgeNeutral)
-kit.Badge(c, "已连接", kit.BadgeSuccess)
+kit.Badge(c, "Local", kit.BadgeNeutral)
+kit.Badge(c, "Connected", kit.BadgeSuccess)
 ```
 
-## 示例
+## Examples
 
-### 状态点
+### Status dot
 
-圆点的颜色由你决定，一般取主题里的语义色。圆点没有文字，要用 `.Label(...)` 给出可访问名称。
+Choose the dot's color yourself, usually a semantic color from the theme. The dot has no text, so provide an accessible name with `.Label(...)`.
 
 ```go
 t := kit.GetTheme(c)
 ui.Row(c).Gap(8).AlignItems(ui.Center).Children(func() {
-	kit.StatusDot(c, t.Colors.Success).Label("已连接")
-	ui.Text(c, "已连接")
+	kit.StatusDot(c, t.Colors.Success).Label("Connected")
+	ui.Text(c, "Connected")
 })
 ```
 
@@ -44,23 +44,23 @@ ui.Row(c).Gap(8).AlignItems(ui.Center).Children(func() {
 
 `func Badge(c *ui.Context, text string, kind BadgeKind) ui.Element`
 
-20 高，圆角 4，文字 12/16，背景是文字色的 16% 透明度。不会被所在行拉伸或压缩。
+Height 20, corner radius 4, text 12/16, and a background using the text color at 16% opacity. It does not stretch or shrink within its row.
 
-- **text** `string`：徽标文字，单行。
-- **kind** `BadgeKind`：语义颜色。
+- **text** `string`: Single-line badge text.
+- **kind** `BadgeKind`: Semantic color.
 
 ### BadgeKind
 
-- **BadgeNeutral**：中性，次要色。
-- **BadgeAccent**：强调色。
-- **BadgeSuccess**：成功。
-- **BadgeWarning**：警告。
-- **BadgeDanger**：危险。
+- **BadgeNeutral**: Neutral, using the secondary color.
+- **BadgeAccent**: Accent color.
+- **BadgeSuccess**: Success.
+- **BadgeWarning**: Warning.
+- **BadgeDanger**: Danger.
 
 ### StatusDot
 
 `func StatusDot(c *ui.Context, color ui.Color) ui.Element`
 
-8×8 的圆点，不会被所在行拉伸或压缩。
+An 8×8 dot that does not stretch or shrink within its row.
 
-- **color** `ui.Color`：圆点颜色。
+- **color** `ui.Color`: Dot color.

@@ -1,11 +1,11 @@
 ---
 title: Menu
-description: 点击弹出的菜单 MenuButton，和右键菜单 ContextMenu。
+description: MenuButton for menus opened by clicking, and ContextMenu for context menus.
 ---
 
 # Menu
 
-菜单有两种入口：点击一个元素弹出的 `MenuButton`，和右键（或菜单键）弹出的 `ContextMenu`。两者共用同一组 `MenuItem`，键盘行为也一样。
+Menus have two entry points: `MenuButton` opens when an element is clicked, and `ContextMenu` opens with a right-click or the Menu key. Both use the same set of `MenuItem` values and have the same keyboard behavior.
 
 <Preview page="Menu" :height="520">
 
@@ -13,7 +13,7 @@ description: 点击弹出的菜单 MenuButton，和右键菜单 ContextMenu。
 
 </Preview>
 
-## 用法
+## Usage
 
 ```go
 import kit "github.com/VaalaCat/mygo-kit"
@@ -21,53 +21,53 @@ import kit "github.com/VaalaCat/mygo-kit"
 
 ```go
 items := []kit.MenuItem{
-	{Icon: kit.IconPencil, Title: "重命名", Shortcut: "F2", OnSelect: rename},
+	{Icon: kit.IconPencil, Title: "Rename", Shortcut: "F2", OnSelect: rename},
 	{Separator: true},
-	{Icon: kit.IconX, Title: "删除", Danger: true, OnSelect: remove},
+	{Icon: kit.IconX, Title: "Delete", Danger: true, OnSelect: remove},
 }
-kit.MenuButton(c, kit.IconButton(c.Key("more"), kit.IconEllipsis, "更多"), items)
+kit.MenuButton(c, kit.IconButton(c.Key("more"), kit.IconEllipsis, "More"), items)
 ```
 
-菜单项的动作写在 `OnSelect` 里，选中、菜单关闭的那一帧调用。菜单每帧都要调用，打开状态由组件保存在触发元素上。
+Put each menu item's action in `OnSelect`. It is called in the frame when the item is selected and the menu closes. Call the menu every frame; the component stores its open state on the trigger element.
 
-## 示例
+## Examples
 
-### 点击菜单
+### Click menu
 
-任何元素都能当触发元素，常见的是 `IconButton` 和 `ToolButton`。键盘操作：上下键、Home/End、首字母移动高亮，Enter 选中，Esc 关闭。键盘聚焦时按 Enter 或 Space 打开，会直接高亮第一项。
+Any element can be a trigger; `IconButton` and `ToolButton` are common choices. Use the up and down arrows, Home/End, or an initial letter to move the highlight, Enter to select, and Esc to close. Pressing Enter or Space while the trigger has keyboard focus opens the menu with the first item highlighted.
 
 ```go
-kit.MenuButton(c, kit.ToolButton(c.Key("ws"), kit.IconFolder, "工作区", true), []kit.MenuItem{
-	{Title: "本地", OnSelect: useLocal},
-	{Title: "远程", OnSelect: useRemote},
+kit.MenuButton(c, kit.ToolButton(c.Key("ws"), kit.IconFolder, "Workspace", true), []kit.MenuItem{
+	{Title: "Local", OnSelect: useLocal},
+	{Title: "Remote", OnSelect: useRemote},
 })
 ```
 
-返回值 `closed` 为真表示菜单在本帧关闭（Esc、点击外部或触发元素、Tab、选中条目），焦点回到触发元素。想把焦点放到别处，就在返回 true 的那一帧自己设置焦点。
+A true `closed` return value means the menu closed in this frame, whether through Esc, a click outside or on the trigger, Tab, or selecting an item. Focus returns to the trigger. To focus something else, set focus yourself in the frame that returns true.
 
-### 右键菜单
+### Context menu
 
-`ContextMenu` 给目标元素加右键菜单：右键时在指针处弹出；目标有焦点时，按 Shift+F10 或菜单键，在目标下方弹出。目标要能获得焦点，才能用键盘唤出。
+`ContextMenu` adds a context menu to a target element. A right-click opens it at the pointer. When the target has focus, Shift+F10 or the Menu key opens it below the target. The target must be focusable for keyboard activation.
 
 ```go
 area := ui.Column(c.Key("area")).Height(120).Width(360).Focusable().Children(func() {
-	ui.Text(c, "在这里右键")
+	ui.Text(c, "Right-click here")
 })
 kit.ContextMenu(c, area, items)
 ```
 
-### 文字上的右键菜单
+### Context menu on text
 
-目标是 `Selectable` 的文字容器时，右键弹出的是这个菜单，而不是系统的文字菜单，拖选不受影响。打开时如果有选中的文字，菜单顶部会多一项“复制”，复制的就是选中的那段。
+When the target is a `Selectable` text container, right-clicking opens this menu instead of the system text menu. Drag selection still works. If text is selected when the menu opens, a “Copy” item appears at the top and copies that selection.
 
 ```go
 text := ui.Column(c.Key("text")).Selectable().Children(func() {
-	ui.Text(c, "选中其中一部分，再右键。")
+	ui.Text(c, "Select part of this text, then right-click.")
 })
 kit.ContextMenu(c, text, items)
 ```
 
-`Selectable` 容器必须自己就是 `target`。挂在它的祖先上，容器里的文字仍然显示系统菜单。
+The `Selectable` container itself must be the `target`. Attaching the menu to an ancestor still leaves the system menu on the container's text.
 
 ## API
 
@@ -75,24 +75,24 @@ kit.ContextMenu(c, text, items)
 
 `func MenuButton(c *ui.Context, trigger ui.Element, items []MenuItem) (closed bool)`
 
-给 `trigger` 附上点击后在下方弹出的菜单。点击触发元素开关菜单。
+Attaches a menu to `trigger` that opens below it on click. Clicking the trigger toggles the menu.
 
-- **trigger** `ui.Element`：触发元素。
-- **items** `[]MenuItem`：菜单项。
-- **返回值** `bool`：菜单在本帧关闭。
+- **trigger** `ui.Element`: Trigger element.
+- **items** `[]MenuItem`: Menu items.
+- **Returns** `bool`: Whether the menu closed in the current frame.
 
 ### ContextMenu
 
 `func ContextMenu(c *ui.Context, target ui.Element, items []MenuItem) (closed bool)`
 
-给 `target` 附上右键菜单。返回值含义同 `MenuButton`。
+Attaches a context menu to `target`. The return value has the same meaning as for `MenuButton`.
 
 ### MenuItem
 
-- **Icon** `*ui.SVG`：条目图标，14。任一条目有图标时，没有图标的条目也会留出图标位，标题对齐。
-- **Title** `string`：标题。
-- **Shortcut** `string`：行尾右对齐显示的快捷键提示，例如 `"⌘N"`。只显示，不注册快捷键。
-- **Danger** `bool`：标题和图标用危险色。
-- **Disabled** `bool`：条目变淡且不可选，方向键、首字母跳转都会跳过。
-- **Separator** `bool`：为真时这一项只画一条分隔线，其余字段忽略。
-- **OnSelect** `func()`：条目被选中、菜单关闭的那一帧调用。
+- **Icon** `*ui.SVG`: An item icon sized 14. If any item has an icon, items without icons also reserve icon space to keep titles aligned.
+- **Title** `string`: Title.
+- **Shortcut** `string`: A shortcut hint aligned to the right at the end of the row, such as `"⌘N"`. It only displays the hint and does not register a shortcut.
+- **Danger** `bool`: Uses the danger color for the title and icon.
+- **Disabled** `bool`: Dims the item and makes it unselectable. Arrow key and initial-letter navigation skip it.
+- **Separator** `bool`: When true, draws only a separator for this item and ignores the other fields.
+- **OnSelect** `func()`: Called in the frame when the item is selected and the menu closes.

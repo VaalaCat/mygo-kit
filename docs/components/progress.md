@@ -1,11 +1,11 @@
 ---
 title: Progress
-description: 4 高的线性进度条 ProgressBar，和环形进度 ProgressRing（用量到阈值会变色）。
+description: A linear ProgressBar with a height of 4 and a ProgressRing that changes color at usage thresholds.
 ---
 
 # Progress
 
-`ProgressBar` 是细长的线性进度条；`ProgressRing` 是环形进度，常用来显示上下文用量。两者的 `value` 都是 0 到 1 的比例，超出范围会被截到 0 或 1。
+`ProgressBar` is a thin linear progress bar; `ProgressRing` is a circular progress indicator, commonly used for context usage. Both take a `value` from 0 to 1 and clamp values outside that range to 0 or 1.
 
 <Preview page="Progress" :height="360">
 
@@ -13,7 +13,7 @@ description: 4 高的线性进度条 ProgressBar，和环形进度 ProgressRing�
 
 </Preview>
 
-## 用法
+## Usage
 
 ```go
 import kit "github.com/VaalaCat/mygo-kit"
@@ -23,7 +23,7 @@ import kit "github.com/VaalaCat/mygo-kit"
 kit.ProgressBar(c, 0.42)
 ```
 
-条的宽度由所在容器决定，所以放进有宽度的容器里：
+The container determines the bar's width, so place it inside a container with a width:
 
 ```go
 ui.Column(c).Width(320).Children(func() {
@@ -31,18 +31,18 @@ ui.Column(c).Width(320).Children(func() {
 })
 ```
 
-## 示例
+## Examples
 
-### 用量环
+### Usage ring
 
 ```go
 ui.Row(c).Gap(8).AlignItems(ui.Center).Children(func() {
 	kit.ProgressRing(c, used, 16)
-	ui.Text(c, "上下文窗口")
+	ui.Text(c, "Context window")
 })
 ```
 
-环在 `value` 达到 0.85 时变成警告色，达到 0.95 时变成危险色。`value` 大于 0 时，弧至少画 8°，这样很低的占比也能看出来；`value` 为 0 时只有底环。
+The ring uses the warning color when `value` reaches 0.85 and the danger color at 0.95. When `value` is greater than 0, the arc spans at least 8° so even a very small proportion is visible. When `value` is 0, only the track ring is drawn.
 
 ## API
 
@@ -50,15 +50,15 @@ ui.Row(c).Gap(8).AlignItems(ui.Center).Children(func() {
 
 `func ProgressBar(c *ui.Context, value float32) ui.Element`
 
-4 高，悬停色轨道，强调色填充，两端圆角。可访问名称是百分比，例如 `42%`。
+Has a height of 4, a hover-colored track, an accent-colored fill, and rounded ends. The accessible name is the percentage, such as `42%`.
 
-- **value** `float32`：0 到 1 的比例。
+- **value** `float32`: A proportion from 0 to 1.
 
 ### ProgressRing
 
 `func ProgressRing(c *ui.Context, value float32, size float32) ui.Element`
 
-环线宽 2，从顶部顺时针画。可访问名称始终是真实的百分比（不受最小弧长影响）。
+The ring has a stroke width of 2 and is drawn clockwise from the top. Its accessible name always uses the actual percentage, unaffected by the minimum arc length.
 
-- **value** `float32`：0 到 1 的比例。
-- **size** `float32`：环的边长。画廊里用 14、16、20。
+- **value** `float32`: A proportion from 0 to 1.
+- **size** `float32`: The ring's side length. The gallery uses 14, 16, and 20.

@@ -1,11 +1,11 @@
 ---
 title: JSON
-description: 可键盘展开、选择和复制的虚拟 JSON 树。
+description: A virtualized JSON tree with keyboard expansion, selection, and copying.
 ---
 
 # JSON
 
-把一个 JSON 值显示成可展开的树：对象和数组只显示成员数，叶子显示值。是虚拟列表，只构建可见的行，大 JSON 也流畅。
+Displays a JSON value as an expandable tree. Objects and arrays show only their member counts; leaves show their values. The virtualized list builds only visible rows, so large JSON values remain smooth to browse.
 
 <Preview page="JSON" :height="360">
 
@@ -13,28 +13,28 @@ description: 可键盘展开、选择和复制的虚拟 JSON 树。
 
 </Preview>
 
-## 用法
+## Usage
 
 ```go
 import kit "github.com/VaalaCat/mygo-kit"
 ```
 
 ```go
-state, err := kit.NewJSONState(data) // 解析一次，状态由应用持有
+state, err := kit.NewJSONState(data) // Parse once; the application holds the state
 if err != nil {
-	// data 不是合法的 JSON
+	// data is not valid JSON
 }
 
 kit.JSONTree(c, state, kit.JSONOpt{}).Grow(1)
 ```
 
-`NewJSONState` 解析任意顶级值，包括 `null`、数组和标量；数字保留原文的写法。内容变了就调用 `state.Set(newData)`，成功后替换树，仍然存在的展开路径会保留，用户收起的根节点不会被重新展开。
+`NewJSONState` parses any top-level value, including `null`, arrays, and scalars. Numbers retain their original representation. Call `state.Set(newData)` when the content changes. On success, it replaces the tree, preserves expanded paths that still exist, and leaves the root collapsed if the user collapsed it.
 
-## 操作
+## Interaction
 
-- 点击一行选中它，有子节点的同时切换展开。
-- 上下键移动选中。右键展开，已展开时进入第一个子节点；左键收起，已收起时回到父节点。Enter 或 Space 切换展开。
-- 选中后按 Cmd+C（Linux 和 Windows 上是 Ctrl+C）复制这个节点的 JSON；工具栏的复制按钮复制整个值。
+- Click a row to select it. If it has children, clicking also toggles expansion.
+- Use the up and down arrow keys to move the selection. The right arrow expands a node, or moves to its first child if already expanded. The left arrow collapses a node, or moves to its parent if already collapsed. Enter or Space toggles expansion.
+- With a node selected, press Cmd+C (Ctrl+C on Linux and Windows) to copy its JSON. The toolbar's copy button copies the entire value.
 
 ## API
 
@@ -42,24 +42,24 @@ kit.JSONTree(c, state, kit.JSONOpt{}).Grow(1)
 
 `func NewJSONState(data []byte) (*JSONState, error)`
 
-解析 JSON 并创建状态。根节点默认展开。
+Parses JSON and creates the state. The root node is expanded by default.
 
 ### JSONState.Set
 
 `func (s *JSONState) Set(data []byte) error`
 
-解析新内容。出错时返回错误，旧的树保持不变。内容里有多个 JSON 值也会报错。
+Parses new content. On failure, it returns an error and leaves the old tree unchanged. Content containing multiple JSON values also returns an error.
 
 ### JSONTree
 
 `func JSONTree(c *ui.Context, s *JSONState, opt JSONOpt) ui.Element`
 
-带圆角细边框的内容框，顶部是标题栏和复制按钮，下面是树。每行 20 高，每级缩进 16。
+A content box with rounded corners and a thin border. A title bar and copy button sit above the tree. Each row is 20 high, with 16 units of indentation per level.
 
-- **s** `*JSONState`：由调用方持有的状态。
-- **opt** `JSONOpt`：见下。
+- **s** `*JSONState`: State held by the caller.
+- **opt** `JSONOpt`: See below.
 
 ### JSONOpt
 
-- **Title** `string`：标题栏文字。默认 `JSON`。
-- **CopyLabel** `string`：复制按钮的提示和可访问名称。默认“复制 JSON”（英文 Copy JSON）。
+- **Title** `string`: Title bar text. Defaults to `JSON`.
+- **CopyLabel** `string`: The copy button's tooltip and accessible name. Defaults to “Copy JSON” (localized in Chinese).

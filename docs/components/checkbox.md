@@ -1,11 +1,11 @@
 ---
 title: Checkbox
-description: 直角复选框，标签可点击，状态由调用方的 bool 持有。
+description: A square checkbox with a clickable label and state held in the caller's bool.
 ---
 
 # Checkbox
 
-16 见方的复选框加一个可点击的标签。勾选、Space 键和无障碍行为沿用 MyGo 的复选框。
+A 16×16 checkbox with a clickable label. Checking, the Space key, and accessibility behavior come from MyGo's checkbox.
 
 <Preview page="Checkbox" :height="200">
 
@@ -13,26 +13,26 @@ description: 直角复选框，标签可点击，状态由调用方的 bool 持�
 
 </Preview>
 
-## 用法
+## Usage
 
 ```go
 import kit "github.com/VaalaCat/mygo-kit"
 ```
 
 ```go
-var autoSave bool // 由应用持有
+var autoSave bool // Owned by the application
 
-kit.Checkbox(c.Key("auto-save"), &autoSave, "自动保存")
+kit.Checkbox(c.Key("auto-save"), &autoSave, "Auto-save")
 ```
 
-点击后 `*checked` 被直接翻转。本帧是否变化用返回元素的 `.Changed()` 判断。
+Clicking directly toggles `*checked`. Use `.Changed()` on the returned element to check whether it changed this frame.
 
-## 示例
+## Examples
 
-### 禁用
+### Disabled
 
 ```go
-kit.Checkbox(c.Key("disabled"), &autoSave, "不可用").Disabled(true)
+kit.Checkbox(c.Key("disabled"), &autoSave, "Unavailable").Disabled(true)
 ```
 
 ## API
@@ -41,7 +41,7 @@ kit.Checkbox(c.Key("disabled"), &autoSave, "不可用").Disabled(true)
 
 `func Checkbox(c *ui.Context, checked *bool, label string) ui.Element`
 
-整行 28 高，方框圆角 4，选中时是强调色底加勾。
+The whole row is 28 high. The box has a corner radius of 4 and an accent-colored background with a checkmark when selected.
 
-- **checked** `*bool`：勾选状态，由调用方持有。
-- **label** `string`：标签文字，同时是可访问名称。点标签和点方框一样切换。
+- **checked** `*bool`: Checked state, owned by the caller.
+- **label** `string`: Label text, also used as the accessible name. Clicking the label toggles the state just like clicking the box.

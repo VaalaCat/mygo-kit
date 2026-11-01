@@ -1,11 +1,11 @@
 ---
 title: ListRow
-description: 整行列表项，支持单行、两行、缩进、行尾状态和悬停操作。
+description: Full-width list rows with one or two lines, indentation, trailing status, and hover actions.
 ---
 
 # ListRow
 
-侧栏、会话列表、文件树里的一行。整行是一个按钮，选中、悬停、按下的底色由主题统一给出。
+A row in a sidebar, conversation list, or file tree. The entire row is a button. The theme supplies its selected, hovered, and pressed background colors.
 
 <Preview page="ListRow" :height="520">
 
@@ -13,7 +13,7 @@ description: 整行列表项，支持单行、两行、缩进、行尾状态和�
 
 </Preview>
 
-## 用法
+## Usage
 
 ```go
 import kit "github.com/VaalaCat/mygo-kit"
@@ -32,55 +32,55 @@ for _, name := range names {
 }
 ```
 
-同一列表里的行要用 `c.Key(...)` 区分。选中状态由调用方用 `Selected` 传入，组件不保存。
+Use `c.Key(...)` to distinguish rows in the same list. The caller passes the selection state through `Selected`; the component does not store it.
 
-## 示例
+## Examples
 
-### 两行
+### Two lines
 
-`Description` 非空时行变成两行、44 高，说明用 12/16 的次要色，单行截断。
+When `Description` is nonempty, the row has two lines and a height of 44. The description uses 12/16 sizing in the secondary color and is truncated to one line.
 
 ```go
-kit.ListRow(c.Key("a"), kit.ListRowOpt{Title: "给客户端加重试", Description: "openvaala · 3 分钟前"})
+kit.ListRow(c.Key("a"), kit.ListRowOpt{Title: "Add client retries", Description: "openvaala · 3 minutes ago"})
 ```
 
-### 行尾状态
+### Trailing status
 
-`Trailing` 画徽标、转圈或状态点。单行时和标题按基线对齐，两行时在整行垂直居中。
+`Trailing` draws a badge, spinner, or status dot. It aligns with the title's baseline in a single-line row and is vertically centered in a two-line row.
 
 ```go
 kit.ListRow(c.Key("b"), kit.ListRowOpt{
-	Title:       "更新变更日志",
-	Description: "docs · 昨天",
-	Trailing:    func() { kit.StatusDot(c, kit.GetTheme(c).Colors.Accent).Label("未读") },
+	Title:       "Update changelog",
+	Description: "docs · Yesterday",
+	Trailing:    func() { kit.StatusDot(c, kit.GetTheme(c).Colors.Accent).Label("Unread") },
 })
 ```
 
-### 悬停操作
+### Hover actions
 
-`Actions` 画行尾的 28 见方图标按钮，只在悬停、选中或键盘聚焦到行内时显示。不显示时仍占位，行内容不会跳。
+`Actions` draws 28-square icon buttons at the end of the row. They appear only when the row is hovered, selected, or contains keyboard focus. Their space stays reserved when hidden, so the row's content does not shift.
 
 ```go
 kit.ListRow(c.Key("c"), kit.ListRowOpt{
-	Title: "某个会话",
+	Title: "A conversation",
 	Actions: func() {
-		kit.IconButtonTip(c.Key("more"), kit.IconEllipsis, "更多")
+		kit.IconButtonTip(c.Key("more"), kit.IconEllipsis, "More")
 	},
 })
 ```
 
-### 缩进
+### Indentation
 
-`Depth` 每级向右缩进 16，用来画目录树。
+`Depth` indents each level 16 units to the right for directory trees.
 
 ```go
 kit.ListRow(c.Key("file"), kit.ListRowOpt{Icon: kit.IconFileText, Title: "composer.go", Depth: 2})
 ```
 
-### 禁用
+### Disabled
 
 ```go
-kit.ListRow(c.Key("off"), kit.ListRowOpt{Icon: kit.IconBan, Title: "不可用"}).Disabled(true)
+kit.ListRow(c.Key("off"), kit.ListRowOpt{Icon: kit.IconBan, Title: "Unavailable"}).Disabled(true)
 ```
 
 ## API
@@ -89,14 +89,14 @@ kit.ListRow(c.Key("off"), kit.ListRowOpt{Icon: kit.IconBan, Title: "不可用"})
 
 `func ListRow(c *ui.Context, opt ListRowOpt) ui.Element`
 
-28 高（带说明时 44）。返回的元素是按钮，调用方用 `Clicked()` 响应点击，也可以链式调用 `FillWidth`、`Key`、`Label`。
+Has a height of 28, or 44 with a description. The returned element is a button. Use `Clicked()` to handle clicks, or chain `FillWidth`, `Key`, and `Label`.
 
 ### ListRowOpt
 
-- **Icon** `*ui.SVG`：行首图标，14，画在 16 宽的图标位中央。为 `nil` 时不留图标位。
-- **Title** `string`：标题，单行截断，同时是可访问名称。
-- **Description** `string`：非空时行变成两行、44 高。
-- **Selected** `bool`：显示选中底色。
-- **Depth** `int`：缩进层级，每级 16。默认 0。
-- **Trailing** `func()`：绘制行尾的状态或徽标。
-- **Actions** `func()`：绘制行尾的操作按钮，只在悬停、选中或键盘聚焦到行内时显示。设置后右侧内边距缩到 4，按钮和标题栏里的图标按钮在同一条右对齐线上。
+- **Icon** `*ui.SVG`: A leading icon sized 14 and centered in a slot 16 wide. No icon space is reserved when `nil`.
+- **Title** `string`: The title, truncated to one line. Also serves as the accessible name.
+- **Description** `string`: When nonempty, makes the row two lines and 44 high.
+- **Selected** `bool`: Shows the selected background color.
+- **Depth** `int`: Indentation level, with 16 units per level. Defaults to 0.
+- **Trailing** `func()`: Draws a trailing status or badge.
+- **Actions** `func()`: Draws trailing action buttons, visible only when the row is hovered, selected, or contains keyboard focus. Setting it reduces the right padding to 4, aligning the buttons' right edge with icon buttons in the header.

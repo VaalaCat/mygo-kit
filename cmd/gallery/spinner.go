@@ -14,7 +14,7 @@ func init() {
 				kit.Spinner(c, 24)
 				ui.Row(c).Gap(8).AlignItems(ui.Center).Children(func() {
 					kit.Spinner(c, 14)
-					ui.Text(c, "Thinking…").TextColor(kit.GetTheme(c).Colors.Muted)
+					ui.Text(c, t(c, "Thinking…")).TextColor(kit.GetTheme(c).Colors.Muted)
 				})
 			})
 		})

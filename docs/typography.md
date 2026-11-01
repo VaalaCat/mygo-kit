@@ -1,18 +1,18 @@
 ---
-title: 字体与图标
-description: 内置的 IBM Plex Sans 和 Lilex、RegisterFonts、全部图标常量，以及 Kbd。
+title: Typography & Icons
+description: The built-in IBM Plex Sans and Lilex fonts, RegisterFonts, all icon constants, and Kbd.
 ---
 
-# 字体与图标
+# Typography & Icons
 
-## 字体
+## Fonts
 
-本库内置两个字体族，和 Zed 默认的界面字体、代码字体对应：
+The library includes two font families, matching Zed’s default UI and code fonts:
 
-- **IBM Plex Sans**（常量 `kit.FontSans`）：界面和正文。常规、半粗、斜体、半粗斜体。
-- **Lilex**（常量 `kit.FontMono`）：代码、终端、JSON、补丁。常规、粗体、斜体。
+- **IBM Plex Sans** (constant `kit.FontSans`): UI and body text. Regular, semibold, italic, and semibold italic.
+- **Lilex** (constant `kit.FontMono`): code, terminals, JSON, and patches. Regular, bold, and italic.
 
-字体文件嵌在库里。应用启动时调用一次 `RegisterFonts`，在创建窗口之前：
+Font files are embedded in the library. Call `RegisterFonts` once at application startup, before creating windows:
 
 ```go
 if err := kit.RegisterFonts(); err != nil {
@@ -20,9 +20,9 @@ if err := kit.RegisterFonts(); err != nil {
 }
 ```
 
-重复调用只注册一次，也没有副作用。
+Repeated calls still register fonts only once and have no side effects.
 
-主题里的字体名就是这两个常量，`Theme.Typography.Font` 是 `FontSans`，`Theme.Typography.MonoFont` 是 `FontMono`。想用自己的字体，先用 MyGo 的 `ui.RegisterFont` 注册，再改主题：
+The theme uses these two constants as font names: `Theme.Typography.Font` is `FontSans`, and `Theme.Typography.MonoFont` is `FontMono`. To use your own font, register it with MyGo’s `ui.RegisterFont`, then update the theme:
 
 ```go
 theme := kit.OneLight()
@@ -30,68 +30,68 @@ theme.Typography.Font = "My Sans"
 kit.ApplyTheme(c, theme)
 ```
 
-自己的元素要用等宽字体时：
+To use a monospace font for your own elements:
 
 ```go
 t := kit.GetTheme(c)
 t.TextRole(ui.Text(c, "go test ./..."), kit.TextCode)
 ```
 
-字号和行高的层级见[主题](/theming#文字层级)。
+For font sizes and line heights, see [Theming](/theming#text-roles).
 
-### 浏览器里
+### In a browser
 
-浏览器构建（`GOOS=js GOARCH=wasm`）只注册各字体族的常规体。浏览器只按族名区分字体，同族的粗体、斜体会盖掉常规体，所以粗体由浏览器合成。桌面构建不受影响。
+Browser builds (`GOOS=js GOARCH=wasm`) register only the regular face of each font family. Browsers distinguish fonts only by family name, so bold and italic faces from the same family would overwrite the regular face. The browser synthesizes bold text instead. Desktop builds are unaffected.
 
-## 图标
+## Icons
 
-图标是 Lucide 的线性图标，统一 1.5 描边，颜色跟随文字。每个图标是一个 `*ui.SVG` 变量，直接传给组件，或者用 `ui.Icon` 画：
+Icons are Lucide outline icons with a consistent 1.5 stroke width. Their color follows the text color. Each icon is a `*ui.SVG` variable. Pass it directly to a component or draw it with `ui.Icon`:
 
 ```go
-kit.IconButton(c.Key("settings"), kit.IconSettings, "设置")
+kit.IconButton(c.Key("settings"), kit.IconSettings, "Settings")
 
 ui.Icon(c, kit.IconSearch).Size(kit.IconSizeDefault, kit.IconSizeDefault).TextColor(t.Colors.Muted)
 ```
 
-尺寸常量 `IconSizeSmall`（12）、`IconSizeDefault`（14）、`IconSizeLarge`（16）见[主题](/theming#图标尺寸)。
+For the size constants `IconSizeSmall` (12), `IconSizeDefault` (14), and `IconSizeLarge` (16), see [Theming](/theming#icon-sizes).
 
-用自己的 SVG 时，用 `ui.ParseSVG` 或 `ui.MustParseSVG` 解析，得到的 `*ui.SVG` 和内置图标一样用。线条颜色用 `currentColor` 才会跟随文字颜色。
+To use your own SVG, parse it with `ui.ParseSVG` or `ui.MustParseSVG`. Use the resulting `*ui.SVG` just like a built-in icon. Set stroke colors to `currentColor` so they follow the text color.
 
-### 全部图标
+### All icons
 
-面板和布局：
+Panels and layout:
 
-- `IconPanelLeft`、`IconPanelRight`、`IconPanelBottom`
-- `IconPanelBottomClose`、`IconPanelRightClose`
-- `IconFold`、`IconFiles`、`IconListTree`、`IconListEnd`
+- `IconPanelLeft`, `IconPanelRight`, `IconPanelBottom`
+- `IconPanelBottomClose`, `IconPanelRightClose`
+- `IconFold`, `IconFiles`, `IconListTree`, `IconListEnd`
 
-箭头和方向：
+Arrows and directions:
 
-- `IconChevronDown`、`IconChevronLeft`、`IconChevronRight`
-- `IconArrowUp`、`IconArrowDown`
+- `IconChevronDown`, `IconChevronLeft`, `IconChevronRight`
+- `IconArrowUp`, `IconArrowDown`
 
-操作：
+Actions:
 
-- `IconPlus`、`IconX`、`IconCheck`、`IconSearch`、`IconSettings`
-- `IconCopy`、`IconPencil`、`IconTrash`、`IconDownload`、`IconReplace`
-- `IconRefresh`、`IconRotateCcw`
-- `IconPlay`、`IconStop`、`IconCirclePause`、`IconCircleStop`
-- `IconEllipsis`、`IconImagePlus`
+- `IconPlus`, `IconX`, `IconCheck`, `IconSearch`, `IconSettings`
+- `IconCopy`, `IconPencil`, `IconTrash`, `IconDownload`, `IconReplace`
+- `IconRefresh`, `IconRotateCcw`
+- `IconPlay`, `IconStop`, `IconCirclePause`, `IconCircleStop`
+- `IconEllipsis`, `IconImagePlus`
 
-状态和提示：
+Status and hints:
 
-- `IconInfo`、`IconAlert`、`IconTriangleAlert`
-- `IconCircleCheck`、`IconCircleX`、`IconBan`
-- `IconLoader`、`IconGauge`、`IconActivity`
+- `IconInfo`, `IconAlert`, `IconTriangleAlert`
+- `IconCircleCheck`, `IconCircleX`, `IconBan`
+- `IconLoader`, `IconGauge`, `IconActivity`
 
-对象：
+Objects:
 
-- `IconFolder`、`IconFileText`、`IconArchive`、`IconBookOpen`
-- `IconTerminal`、`IconCommand`、`IconBraces`
-- `IconBot`、`IconBrain`、`IconWrench`、`IconBug`
-- `IconBranch`、`IconGitFork`、`IconWebhook`、`IconServerCog`
+- `IconFolder`, `IconFileText`, `IconArchive`, `IconBookOpen`
+- `IconTerminal`, `IconCommand`, `IconBraces`
+- `IconBot`, `IconBrain`, `IconWrench`, `IconBug`
+- `IconBranch`, `IconGitFork`, `IconWebhook`, `IconServerCog`
 - `IconMessageSquare`
 
 ## Kbd
 
-`Kbd` 是显示快捷键的小标签，用法见 [Kbd](/components/kbd)。它用 `TextCaption` 的字号，放在文字旁边时要和文字一起用 `AlignItems(ui.Center)` 垂直居中。
+`Kbd` is a small label for keyboard shortcuts. See [Kbd](/components/kbd) for usage. It uses the `TextCaption` font size. When placed beside text, use `AlignItems(ui.Center)` to center both vertically.

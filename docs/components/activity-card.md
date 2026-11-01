@@ -1,14 +1,14 @@
 ---
 title: ActivityCard
-description: 一行条目标题，可展开详情，带状态图标，用于工具调用、思考这类过程记录。
+description: A single-line entry header with expandable details and a status icon, for recording tool calls, thinking, and other steps.
 ---
 
 # ActivityCard
 
-一行 28 高的条目标题，有详情时可以展开。常用来显示 Agent 的工具调用、思考、错误这类过程。
+A 28-high, single-line entry header that can expand when details are available. Commonly used to show an Agent's tool calls, thinking, errors, and other steps.
 
 ```
-[图标/箭头] 标题  状态  摘要 ········ [操作]
+[Icon/arrow] Title  Status  Summary ········ [Actions]
 ```
 
 <Preview page="ActivityCard" :height="460">
@@ -17,14 +17,14 @@ description: 一行条目标题，可展开详情，带状态图标，用于工�
 
 </Preview>
 
-## 用法
+## Usage
 
 ```go
 import kit "github.com/VaalaCat/mygo-kit"
 ```
 
 ```go
-var open bool // 展开状态由应用持有
+var open bool // The application owns the expanded state
 
 kit.ActivityCard(c, &open, kit.ActivityCardOpt{
 	Icon:    kit.IconTerminal,
@@ -36,46 +36,46 @@ kit.ActivityCard(c, &open, kit.ActivityCardOpt{
 })
 ```
 
-最后两个参数分别是右侧操作和展开后的详情。`detail` 传 `nil` 时这一行不可展开，也没有箭头，只是一行普通文字。每张卡片的 `open` 都要各自持有。
+The last two arguments are the actions on the right and the expanded details, respectively. With `detail` set to `nil`, the row is a plain text row with no expansion or arrow. Keep a separate `open` for each card.
 
-## 示例
+## Examples
 
-### 悬停才出现的操作
+### Actions shown on hover
 
-`actions` 里的图标按钮独立于展开按钮，只在悬停或键盘聚焦这一行时显示，占位不变。
+The icon buttons in `actions` are separate from the expand button. They appear only when the row is hovered or has keyboard focus, while their space stays reserved.
 
 ```go
-inspect := func() { kit.IconButton(c, kit.IconBug, "检查") }
+inspect := func() { kit.IconButton(c, kit.IconBug, "Inspect") }
 kit.ActivityCard(c, &open, opt, inspect, detail)
 ```
 
-### 状态
+### Status
 
-`Status` 在标题后面显示一个图标；空值表示成功或没有状态，不显示图标。
+`Status` shows an icon after the title. An empty value means success or no status and shows no icon.
 
 ```go
 kit.ActivityCardOpt{Icon: kit.IconPencil, Title: "apply_patch", Status: kit.ActivityFailed}
 ```
 
-### 语义色
+### Semantic colors
 
-`Tone` 改变标题和图标的颜色。
-
-```go
-kit.ActivityCardOpt{Icon: kit.IconTriangleAlert, Title: "模型调用失败", Tone: kit.ActivityDanger}
-```
-
-### 进行中
-
-`Shimmer` 让标题闪烁，用于思考、压缩、运行中。
+`Tone` changes the title and icon colors.
 
 ```go
-kit.ActivityCardOpt{Icon: kit.IconBrain, Title: "思考中", Shimmer: true}
+kit.ActivityCardOpt{Icon: kit.IconTriangleAlert, Title: "Model call failed", Tone: kit.ActivityDanger}
 ```
 
-### 标题后的自定义内容
+### In progress
 
-`Extra` 紧跟标题，在展开按钮之外，可以放可交互的内容，例如会话链接。设置后不再显示 `Summary`。
+`Shimmer` makes the title shimmer, for thinking, compaction, or work in progress.
+
+```go
+kit.ActivityCardOpt{Icon: kit.IconBrain, Title: "Thinking", Shimmer: true}
+```
+
+### Custom content after the title
+
+`Extra` appears immediately after the title, outside the expand button. It can hold interactive content such as a conversation link. Setting it hides `Summary`.
 
 ## API
 
@@ -83,39 +83,39 @@ kit.ActivityCardOpt{Icon: kit.IconBrain, Title: "思考中", Shimmer: true}
 
 `func ActivityCard(c *ui.Context, open *bool, opt ActivityCardOpt, actions func(), detail func()) ui.Element`
 
-详情缩进到标题文字的位置，左侧竖线对齐图标中线，块之间间隔 12。
+Details are indented to align with the title text. The vertical line on the left aligns with the center of the icon, with 12 between blocks.
 
-- **open** `*bool`：展开状态，由调用方持有。
-- **opt** `ActivityCardOpt`：标题行的内容。
-- **actions** `func()`：绘制右侧操作按钮的函数，可以为 `nil`。
-- **detail** `func()`：绘制展开内容的函数。`nil` 表示不可展开。
+- **open** `*bool`: Expanded state, owned by the caller.
+- **opt** `ActivityCardOpt`: Header row content.
+- **actions** `func()`: Function that draws the action buttons on the right. May be `nil`.
+- **detail** `func()`: Function that draws the expanded content. `nil` disables expansion.
 
 ### ActivityCardOpt
 
-- **Icon** `*ui.SVG`：类型图标。可展开的条目在悬停、聚焦和展开时换成箭头。
-- **Title** `string`：标题。
-- **Summary** `string`：参数摘要，单行截断，不加悬停提示，占位色。
-- **Status** `ActivityStatus`：状态，默认空，不显示。
-- **Tone** `ActivityTone`：语义色，默认 `ActivityNormal`。
-- **Shimmer** `bool`：标题闪烁。
-- **Extra** `func()`：紧跟标题的自定义内容。
+- **Icon** `*ui.SVG`: Type icon. Expandable entries replace it with an arrow on hover, focus, and expansion.
+- **Title** `string`: Title.
+- **Summary** `string`: Argument summary, truncated to one line, with no hover tooltip and in the placeholder color.
+- **Status** `ActivityStatus`: Status. Empty and hidden by default.
+- **Tone** `ActivityTone`: Semantic color. Defaults to `ActivityNormal`.
+- **Shimmer** `bool`: Makes the title shimmer.
+- **Extra** `func()`: Custom content immediately after the title.
 
 ### ActivityStatus
 
-- **ActivityRunning**：运行中，显示转圈。
-- **ActivityFailed**：失败，危险色图标。
-- **ActivityInterrupted**：已中断，警告色。
-- **ActivityBlocked**：被拦截，警告色。
-- **ActivityStopped**：已停止，警告色。
+- **ActivityRunning**: Running; shows a spinner.
+- **ActivityFailed**: Failed; shows a danger-colored icon.
+- **ActivityInterrupted**: Interrupted; uses the warning color.
+- **ActivityBlocked**: Blocked; uses the warning color.
+- **ActivityStopped**: Stopped; uses the warning color.
 
 ### ActivityTone
 
-- **ActivityNormal**：次要色，悬停时变正文色。
-- **ActivityWarning**：警告色。
-- **ActivityDanger**：危险色。
+- **ActivityNormal**: Secondary color, changing to the body text color on hover.
+- **ActivityWarning**: Warning color.
+- **ActivityDanger**: Danger color.
 
 ### StatusIcon
 
 `func StatusIcon(c *ui.Context, status ActivityStatus)`
 
-单独画一个状态图标，不返回元素。成功（空值）什么也不画。图标有对应语言的可访问名称，例如“运行中”。可以在 `ActivityCard` 之外的列表里复用。
+Draws a status icon on its own and returns no element. Success (an empty value) draws nothing. The icon has a localized accessible name, such as “Running”. It can be reused in lists outside `ActivityCard`.

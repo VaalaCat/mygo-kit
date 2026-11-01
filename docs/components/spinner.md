@@ -1,11 +1,11 @@
 ---
 title: Spinner
-description: 旋转的加载图标，颜色跟随文字。
+description: A rotating loading icon that follows the text color.
 ---
 
 # Spinner
 
-每秒转一圈的加载图标。系统或主题要求减少动画时保持静止。
+A loading icon that makes one rotation per second. It stays still when the system or theme requests reduced motion.
 
 <Preview page="Spinner" :height="180">
 
@@ -13,7 +13,7 @@ description: 旋转的加载图标，颜色跟随文字。
 
 </Preview>
 
-## 用法
+## Usage
 
 ```go
 import kit "github.com/VaalaCat/mygo-kit"
@@ -22,11 +22,11 @@ import kit "github.com/VaalaCat/mygo-kit"
 ```go
 ui.Row(c).Gap(8).AlignItems(ui.Center).Children(func() {
 	kit.Spinner(c, kit.IconSizeDefault)
-	ui.Text(c, "思考中…")
+	ui.Text(c, "Thinking…")
 })
 ```
 
-默认是次要色，想换色就链式调用 `.TextColor(...)`。图标尺寸用 [`IconSizeSmall`、`IconSizeDefault`、`IconSizeLarge`](/theming#图标尺寸)。
+The default is the secondary color. Chain `.TextColor(...)` to change it. For icon sizes, use [`IconSizeSmall`, `IconSizeDefault`, `IconSizeLarge`](/theming#icon-sizes).
 
 ## API
 
@@ -34,4 +34,4 @@ ui.Row(c).Gap(8).AlignItems(ui.Center).Children(func() {
 
 `func Spinner(c *ui.Context, size float32) ui.Element`
 
-- **size** `float32`：图标的边长。常用 12、14、16。
+- **size** `float32`: The icon's side length. Common values are 12, 14, and 16.

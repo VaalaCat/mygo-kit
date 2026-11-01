@@ -1,11 +1,11 @@
 ---
 title: AttachmentChip
-description: 待发送附件的一枚标签：缩略图、文件名和移除按钮。
+description: A chip for a pending attachment, with a thumbnail, filename, and remove button.
 ---
 
 # AttachmentChip
 
-输入区上方显示待发送附件的小标签：20×20 缩略图、截断的文件名和一个移除按钮，整体 28 高，最宽 240。
+A small chip above the input area for an attachment waiting to be sent: a 20×20 thumbnail, a truncated filename, and a remove button. It is 28 high and at most 240 wide.
 
 <Preview page="AttachmentChip" :height="240">
 
@@ -13,7 +13,7 @@ description: 待发送附件的一枚标签：缩略图、文件名和移除按�
 
 </Preview>
 
-## 用法
+## Usage
 
 ```go
 import kit "github.com/VaalaCat/mygo-kit"
@@ -27,19 +27,19 @@ for i, name := range names {
 }
 ```
 
-缩略图和附件列表都由调用方准备，组件不读文件。`onRemove` 里改的是你自己的列表。
+The caller prepares both the thumbnails and the attachment list; the component does not read files. Update your own list in `onRemove`.
 
-## 示例
+## Examples
 
-### 没有缩略图或不能移除
+### No thumbnail or removal
 
-`thumb` 传 `nil` 时显示文件图标；`onRemove` 传 `nil` 时不显示移除按钮。
+With `thumb` set to `nil`, a file icon is shown. With `onRemove` set to `nil`, the remove button is hidden.
 
 ```go
 kit.AttachmentChip(c, "notes.txt", nil, nil)
 ```
 
-放多个时，用 `ui.Row(c).Wrap()` 让它们自动换行。
+When displaying several chips, use `ui.Row(c).Wrap()` to let them wrap automatically.
 
 ## API
 
@@ -47,6 +47,6 @@ kit.AttachmentChip(c, "notes.txt", nil, nil)
 
 `func AttachmentChip(c *ui.Context, name string, thumb ui.ImageSource, onRemove func()) ui.Element`
 
-- **name** `string`：文件名，单行截断，同时是可访问名称。
-- **thumb** `ui.ImageSource`：缩略图。`nil` 时显示文件图标。
-- **onRemove** `func()`：点击移除按钮时调用。`nil` 时不显示按钮。
+- **name** `string`: Filename, truncated to one line. Also used as the accessible name.
+- **thumb** `ui.ImageSource`: Thumbnail. Shows a file icon when `nil`.
+- **onRemove** `func()`: Called when the remove button is clicked. The button is hidden when `nil`.
